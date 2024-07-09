@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, TouchableOpacity, StyleSheet,Image } from 'react-native';
-import SvgUri from 'react-native-svg-uri'; // Import SvgUri from react-native-svg
+
 import homeIcon from '../assets/home/Home.png'; // Adjust the path as per your project structure
 
 const BottomNavBar = ({ navigation }) => {
