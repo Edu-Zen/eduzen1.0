@@ -1,56 +1,68 @@
-// screens/ScreenC.js
 import React, { useState } from 'react';
-import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import axios from 'axios';
 import exampleImage from '../assets/splash.png';
 
-const ScreenC = ({navigation}) => {
-  const [code, setCode] = useState(['', '', '', '', '', '']);
+const ScreenC = ({ navigation, route }) => {
+    const { email } = route.params;
+    const [code, setCode] = useState(['', '', '', '', '', '']);
+    const inputs = useRef([]);
 
-  const handleChange = (text, index) => {
-    const newCode = [...code];
-    newCode[index] = text;
-    setCode(newCode);
-    // Move to next input field automatically
-    if (text && index < 5) {
-      this[`input_${index + 1}`].focus();
-    }
-  };
+    const handleChange = (text, index) => {
+        const newCode = [...code];
+        newCode[index] = text;
+        setCode(newCode);
+        if (text && index < 5) {
+            inputs.current[index + 1].focus();
+        }
+    };
 
-  const handleContinue = () => {
-    const verificationCode = code.join('');
-    console.log('Verification Code:', verificationCode);
-    // Add navigation or form submission logic here
-  };
+    const handleContinue = async () => {
+        const verificationCode = code.join('');
+        try {
+            const response = await axios.post('http://localhost:5000/api/students/verify-email', {
+                email,
+                verificationCode,
+            });
+            Alert.alert('Success', 'Email verified successfully');
+            navigation.navigate('ScreenD', { email });
+        } catch (error) {
+            if (error.response) {
+                Alert.alert('Error', error.response.data.message);
+            } else if (error.request) {
+                Alert.alert('Error', 'No response from server. Please try again later.');
+            } else {
+                Alert.alert('Error', 'An error occurred. Please try again.');
+            }
+        }
+    };
 
-  return (
-    <View style={styles.container}>
-      <Image 
-        source={exampleImage} 
-        style={styles.logo} 
-      />
-      <Text style={styles.title}>Créez votre profil</Text>
-      <Text style={styles.subtitle}>Vérifions votre email</Text>
-      <Text style={styles.instructions}>
-        Un code de vérification a été envoyé à votre email, veuillez le saisir dans le champ ci-dessous.
-      </Text>
-      <View style={styles.codeInputContainer}>
-        {code.map((digit, index) => (
-          <TextInput
-            key={index}
-            style={styles.codeInput}
-            keyboardType="numeric"
-            maxLength={1}
-            value={digit}
-            onChangeText={(text) => handleChange(text, index)}
-            ref={(input) => { this[`input_${index}`] = input; }}
-          />
-        ))}
-      </View>
-      <TouchableOpacity style={styles.button} onPress={()=>{handleContinue(),navigation.navigate('ScreenD')}}>
-        <Text style={styles.buttonText}>Continuer</Text>
-      </TouchableOpacity>
-    </View>
-  );
+    return (
+        <View style={styles.container}>
+            <Image source={exampleImage} style={styles.logo} />
+            <Text style={styles.title}>Créez votre profil</Text>
+            <Text style={styles.subtitle}>Vérifions votre email</Text>
+            <Text style={styles.instructions}>
+                Un code de vérification a été envoyé à votre email, veuillez le saisir dans le champ ci-dessous.
+            </Text>
+            <View style={styles.codeInputContainer}>
+                {code.map((digit, index) => (
+                    <TextInput
+                        key={index}
+                        style={styles.codeInput}
+                        keyboardType="numeric"
+                        maxLength={1}
+                        value={digit}
+                        onChangeText={(text) => handleChange(text, index)}
+                        ref={(input) => { inputs.current[index] = input; }}
+                    />
+                ))}
+            </View>
+            <TouchableOpacity style={styles.button} onPress={handleContinue}>
+                <Text style={styles.buttonText}>Continuer</Text>
+            </TouchableOpacity>
+        </View>
+    );
 };
 
 const styles = StyleSheet.create({
