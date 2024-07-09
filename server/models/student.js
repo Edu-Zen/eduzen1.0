@@ -1,32 +1,39 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
+const jwt = require("jsonwebtoken");
+const Joi = require("joi");
+const passwordComplexity = require("joi-password-complexity");
 
-const StudentSchema = new mongoose.Schema({
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-  firstName: {
-    type: String,
-    required: true,
-  },
-  lastName: {
-    type: String,
-    required: true,
-  },
-  birthDate: {
-    type: Date,
-    required: true,
-  },
-  genre: {
-    type: String,
-    required: true,
-    enum: ['Male', 'Female', 'Other'],
-  },
+const studentSchema = new mongoose.Schema({
+  firstName: { type: String, required: true },
+  lastName: { type: String, required: true },
+  email: { type: String, required: true },
+  password: { type: String, required: true },
+  confirmPassword: { type: String, required: true },  // Add this line
+  verified: { type: Boolean, default: false },
+  genre: { type: String, enum: ['Male', 'Female', 'Other'] },
+  birthDate: { type: Date },  // Corrected typo in birthDate
+  verificationCode: { type: Number }
 });
 
-module.exports = mongoose.model('Student', StudentSchema);
+studentSchema.methods.generateAuthToken = function () {
+    const token = jwt.sign({ _id: this._id }, process.env.JWTPRIVATEKEY, {
+        expiresIn: "7d",
+    });
+    return token;
+};
+
+const Student = mongoose.model("student", studentSchema);
+
+const validate = (data) => {
+  const schema = Joi.object({
+      firstName: Joi.string().required().label("First Name"),
+      lastName: Joi.string().required().label("Last Name"),
+      email: Joi.string().email().required().label("Email"),
+      password: passwordComplexity().required().label("Password"),
+      confirmPassword: Joi.ref('password'), // Confirm password should match password
+  });
+  return schema.validate(data);
+};
+
+
+module.exports = { Student, validate };
