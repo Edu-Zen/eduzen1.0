@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState ,useRef} from 'react';
 import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import axios from 'axios';
 import exampleImage from '../assets/splash.png';
@@ -20,7 +20,7 @@ const ScreenC = ({ navigation, route }) => {
     const handleContinue = async () => {
         const verificationCode = code.join('');
         try {
-            const response = await axios.post('http://localhost:5000/api/students/verify-email', {
+            const response = await axios.post('http://192.168.0.15:5000/api/students/verify-email', {
                 email,
                 verificationCode,
             });

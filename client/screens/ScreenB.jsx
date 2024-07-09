@@ -15,7 +15,7 @@ const ScreenB = ({ navigation }) => {
         }
 
         try {
-          const response = await axios.post('http://localhost:5000/api/students/register', {
+          const response = await axios.post('http://192.168.0.15:5000/api/students/register', {
               email,
               password,
               confirmPassword,

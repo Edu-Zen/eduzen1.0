@@ -1,27 +1,31 @@
 import React, { useState } from 'react';
-import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, Alert, Button, Platform } from 'react-native';
 import axios from 'axios';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import exampleImage from '../assets/splash.png';
 
 const ScreenD = ({ navigation, route }) => {
     const { email } = route.params;
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
-    const [birthDate, setBirthDate] = useState('');
+    const [birthDate, setBirthDate] = useState(new Date());
+    const [showDatePicker, setShowDatePicker] = useState(false);
     const [genre, setGenre] = useState('');
 
     const handleContinue = async () => {
         try {
-            const response = await axios.put(`http://localhost:5000/api/students/${email}`, {
+        
+            const response = await axios.post(`http://192.168.0.15:5000/api/students/update/${email}`, {
                 firstName,
                 lastName,
-                birthDate,
+                birthDate: birthDate.toISOString().split('T')[0], // format date to YYYY-MM-DD
                 genre,
             });
             Alert.alert('Success', 'Profile updated successfully');
             navigation.navigate('ScreenE');
         } catch (error) {
             if (error.response) {
+                console.log(error)
                 Alert.alert('Error', error.response.data.message);
             } else if (error.request) {
                 Alert.alert('Error', 'No response from server. Please try again later.');
@@ -29,6 +33,16 @@ const ScreenD = ({ navigation, route }) => {
                 Alert.alert('Error', 'An error occurred. Please try again.');
             }
         }
+    };
+
+    const showDatepicker = () => {
+        setShowDatePicker(true);
+    };
+
+    const onChange = (event, selectedDate) => {
+        const currentDate = selectedDate || birthDate;
+        setShowDatePicker(Platform.OS === 'ios');
+        setBirthDate(currentDate);
     };
 
     return (
@@ -48,12 +62,18 @@ const ScreenD = ({ navigation, route }) => {
                 value={lastName}
                 onChangeText={setLastName}
             />
-            <TextInput
-                placeholder="Date de naissance"
-                style={styles.input}
-                value={birthDate}
-                onChangeText={setBirthDate}
-            />
+            <TouchableOpacity onPress={showDatepicker}>
+                <Text style={[styles.input, styles.dateInput]}>{birthDate.toISOString().split('T')[0]}</Text>
+            </TouchableOpacity>
+            {showDatePicker && (
+                <DateTimePicker
+                    testID="dateTimePicker"
+                    value={birthDate}
+                    mode="date"
+                    display="default"
+                    onChange={onChange}
+                />
+            )}
             <TextInput
                 placeholder="Genre"
                 style={styles.input}
@@ -97,6 +117,10 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         paddingHorizontal: 10,
         marginBottom: 10,
+    },
+    dateInput: {
+        justifyContent: 'center',
+        textAlign: 'center',
     },
     button: {
         backgroundColor: '#20AD96',

@@ -4,8 +4,8 @@ const Joi = require("joi");
 const passwordComplexity = require("joi-password-complexity");
 
 const studentSchema = new mongoose.Schema({
-  firstName: { type: String, required: true },
-  lastName: { type: String, required: true },
+  firstName: { type: String, required: false },
+  lastName: { type: String, required: false },
   email: { type: String, required: true },
   password: { type: String, required: true },
   confirmPassword: { type: String, required: true },  // Add this line
@@ -26,8 +26,8 @@ const Student = mongoose.model("student", studentSchema);
 
 const validate = (data) => {
   const schema = Joi.object({
-      firstName: Joi.string().required().label("First Name"),
-      lastName: Joi.string().required().label("Last Name"),
+      // firstName: Joi.string().required().label("First Name"),
+      // lastName: Joi.string().required().label("Last Name"),
       email: Joi.string().email().required().label("Email"),
       password: passwordComplexity().required().label("Password"),
       confirmPassword: Joi.ref('password'), // Confirm password should match password
