@@ -6,10 +6,10 @@ const ScreenE = ({ navigation }) => {
     // Navigate to HomeScreen after 5 seconds
     useEffect(() => {
         const timer = setTimeout(() => {
-            navigation.replace('HomeScreen');
+            navigation.replace('Home');
             console.log("here passing")
              // Replace current screen with HomeScreen
-        }, 5000); // 5000 milliseconds = 5 seconds
+        }, 4000); // 5000 milliseconds = 5 seconds
 
         return () => clearTimeout(timer); // Cleanup on unmount
     }, [navigation]);
