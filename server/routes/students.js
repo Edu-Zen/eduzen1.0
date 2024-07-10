@@ -10,33 +10,36 @@ function generateVerificationCode() {
 }
 
 router.post("/register", async (req, res) => {
-    try {
-      console.log("first")
-        const { error } = validate(req.body); 
-        if (error) return res.status(400).send({ message: error.details[0].message });
+  try {
+    const { error } = validate(req.body); // Validate request body
+    if (error) return res.status(400).send({ message: error.details[0].message });
 
-        let student = await Student.findOne({ email: req.body.email });
-        if (student) return res.status(409).send({ message: "Student with given email already exists!" });
+    let student = await Student.findOne({ email: req.body.email });
+    if (student) return res.status(409).send({ message: "Student with given email already exists!" });
 
-        const salt = await bcrypt.genSalt(Number(process.env.SALT));
-        const hashPassword = await bcrypt.hash(req.body.password, salt);
+    const salt = await bcrypt.genSalt(Number(process.env.SALT));
+    const hashPassword = await bcrypt.hash(req.body.password, salt);
 
-        // Generate verification code
-        const verificationCode = generateVerificationCode();
+    // Generate verification code
+    const verificationCode = generateVerificationCode();
 
-        // Save student details and verification code
-        student = await new Student({ ...req.body, password: hashPassword, verificationCode }).save();
+    // Save student details and verification code
+    student = await new Student({
+      email: req.body.email,
+      password: hashPassword,
+      confirmPassword: req.body.confirmPassword,
+      verificationCode: verificationCode
+    }).save();
 
-        // Send email with verification code
-        await sendEmail(student.email, "Verify Email", `Your verification code is: ${verificationCode}`);
+    // Send email with verification code
+    await sendEmail(student.email, "Verify Email", `Your verification code is: ${verificationCode}`);
 
-        res.status(201).send({ message: "An Email sent to your account please verify" });
-    } catch (error) {
-        console.log(error);
-        res.status(500).send({ message: "Internal Server Error" });
-    }
+    res.status(201).send({ message: "An Email sent to your account please verify" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ message: "Internal Server Error" });
+  }
 });
-
 // Get a student by ID
 router.get('/:id', async (req, res) => {
   try {

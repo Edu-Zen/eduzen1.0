@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import React, { useState, useRef } from 'react';
+import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, Alert, Platform, Keyboard, ScrollView } from 'react-native'; // Import Keyboard module
 import axios from 'axios';
 import exampleImage from '../assets/splash.png';
 
@@ -20,7 +20,7 @@ const ScreenC = ({ navigation, route }) => {
     const handleContinue = async () => {
         const verificationCode = code.join('');
         try {
-            const response = await axios.post('http://localhost:5000/api/students/verify-email', {
+            const response = await axios.post('http://192.168.1.28:5000/api/students/verify-email', {
                 email,
                 verificationCode,
             });
@@ -37,33 +37,38 @@ const ScreenC = ({ navigation, route }) => {
         }
     };
 
+    const dismissKeyboard = () => {
+        Keyboard.dismiss(); // Dismiss the keyboard
+    };
+
     return (
-        <View style={styles.container}>
-            <Image source={exampleImage} style={styles.logo} />
-            <Text style={styles.title}>Créez votre profil</Text>
-            <Text style={styles.subtitle}>Vérifions votre email</Text>
-            <Text style={styles.instructions}>
-                Un code de vérification a été envoyé à votre email, veuillez le saisir dans le champ ci-dessous.
-            </Text>
-            <View style={styles.codeInputContainer}>
-                {code.map((digit, index) => (
-                    <TextInput
-                        key={index}
-                        style={styles.codeInput}
-                        keyboardType="numeric"
-                        maxLength={1}
-                        value={digit}
-                        onChangeText={(text) => handleChange(text, index)}
-                        ref={(input) => { inputs.current[index] = input; }}
-                    />
-                ))}
-            </View>
-            <TouchableOpacity style={styles.button} onPress={handleContinue}>
-                <Text style={styles.buttonText}>Continuer</Text>
-            </TouchableOpacity>
-        </View>
-    );
+      <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
+          <Image source={exampleImage} style={styles.logo} />
+          <Text style={styles.title}>Créez votre profil</Text>
+          <Text style={styles.subtitle}>Vérifions votre email</Text>
+          <Text style={styles.instructions}>
+              Un code de vérification a été envoyé à votre email, veuillez le saisir dans le champ ci-dessous.
+          </Text>
+          <View style={styles.codeInputContainer}>
+              {code.map((digit, index) => (
+                  <TextInput
+                      key={index}
+                      style={styles.codeInput}
+                      keyboardType="numeric"
+                      maxLength={1}
+                      value={digit}
+                      onChangeText={(text) => handleChange(text, index)}
+                      ref={(input) => { inputs.current[index] = input; }}
+                  />
+              ))}
+          </View>
+          <TouchableOpacity style={styles.button} onPress={handleContinue}>
+              <Text style={styles.buttonText}>Continuer</Text>
+          </TouchableOpacity>
+      </ScrollView>
+  );
 };
+
 
 const styles = StyleSheet.create({
   container: {

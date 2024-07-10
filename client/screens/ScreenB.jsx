@@ -9,13 +9,13 @@ const ScreenB = ({ navigation }) => {
     const [confirmPassword, setConfirmPassword] = useState('');
 
     const handleContinue = async () => {
-        if (password !== confirmPassword) {
-            Alert.alert('Error', 'Passwords do not match');
-            return;
-        }
+      if (password !== confirmPassword) {
+          Alert.alert('Error', 'Passwords do not match');
+          return;
+      }
 
-        try {
-          const response = await axios.post('http://localhost:5000/api/students/register', {
+      try {
+          await axios.post('http://192.168.1.28:5000/api/students/register', {
               email,
               password,
               confirmPassword,
@@ -24,20 +24,15 @@ const ScreenB = ({ navigation }) => {
                   'Content-Type': 'application/json',
               }
           });
-  
-          // Assuming response.data contains the JSON response from the server
+
           Alert.alert('Success', 'Registration successful, please check your email for verification code');
           navigation.navigate('ScreenC', { email });
       } catch (error) {
           if (error.response) {
-              // The request was made and the server responded with a status code
-              // that falls out of the range of 2xx
               Alert.alert('Error', error.response.data.message || 'Registration failed');
           } else if (error.request) {
-              // The request was made but no response was received
               Alert.alert('Error', 'No response received from server. Please try again.');
           } else {
-              // Something happened in setting up the request that triggered an Error
               console.error('Error', error.message);
               Alert.alert('Error', 'An error occurred. Please try again.');
           }
@@ -76,7 +71,6 @@ const ScreenB = ({ navigation }) => {
         </View>
     );
 };
-
   
 const styles = StyleSheet.create({
   container: {

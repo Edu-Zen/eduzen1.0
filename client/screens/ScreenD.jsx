@@ -12,7 +12,7 @@ const ScreenD = ({ navigation, route }) => {
 
     const handleContinue = async () => {
         try {
-            const response = await axios.put(`http://localhost:5000/api/students/${email}`, {
+            const response = await axios.put(`http://192.168.1.28:5000/api/students/${email}`, {
                 firstName,
                 lastName,
                 birthDate,
