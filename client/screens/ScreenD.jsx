@@ -5,6 +5,8 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker'; // import Picker
 import exampleImage from '../assets/splash.png';
 
+import { API_URL } from '@env';
+
 const { width, height } = Dimensions.get('window');
 
 const ScreenD = ({ navigation, route }) => {
@@ -17,7 +19,7 @@ const ScreenD = ({ navigation, route }) => {
 
     const handleContinue = async () => {
         try {
-            const response = await axios.post(`http://192.168.1.149:5000/api/students/update/${email}`, {
+            const response = await axios.post(`${API_URL}/api/students/update/${email}`, {
                 firstName,
                 lastName,
                 birthDate: birthDate.toISOString().split('T')[0], // format date to YYYY-MM-DD

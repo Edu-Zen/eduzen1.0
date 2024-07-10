@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, Dimensions, Alert } from 'react-native';
 import axios from 'axios';
 import exampleImage from '../assets/splash.png';
+import { API_URL } from '@env';
 
 const { width, height } = Dimensions.get('window');
 
@@ -10,13 +11,14 @@ const ScreenLogin = ({ navigation }) => {
     const [password, setPassword] = useState('');
 
     const handleLogin = async () => {
+
         try {
-            const response = await axios.post('http://192.168.0.15:5000/api/auth/', {
+            const response = await axios.post(`${API_URL}/api/auth`, {
                 email,
                 password,
             });
             Alert.alert('Success', 'Login successful');
-            navigation.navigate('HomeScreen'); // Replace with your actual home screen name
+            navigation.navigate('Home'); // Replace with your actual home screen name
         } catch (error) {
             if (error.response) {
                 Alert.alert('Error', error.response.data.message);

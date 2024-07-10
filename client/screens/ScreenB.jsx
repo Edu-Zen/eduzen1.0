@@ -3,6 +3,7 @@ import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, Alert } fro
 import axios from 'axios';
 import exampleImage from '../assets/splash.png';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { API_URL } from '@env';
 
 const ScreenB = ({ navigation }) => {
     const [email, setEmail] = useState('');
@@ -12,13 +13,14 @@ const ScreenB = ({ navigation }) => {
     const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
 
     const handleContinue = async () => {
-        if (password !== confirmPassword) {
-            Alert.alert('Error', 'Passwords do not match');
-            return;
-        }
+      if (password !== confirmPassword) {
+          Alert.alert('Error', 'Passwords do not match');
+          return;
+      }
 
-        try {
-            const response = await axios.post('http://192.168.1.149:5000/api/students/register', {
+        try { 
+          console.log(API_URL)
+            const response = await axios.post(`${API_URL}/api/students/register`, {
                 email,
                 password,
                 confirmPassword,
@@ -99,7 +101,6 @@ const ScreenB = ({ navigation }) => {
         </View>
     );
 };
-
 const styles = StyleSheet.create({
     container: {
         flex: 1,
