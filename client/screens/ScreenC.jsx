@@ -1,5 +1,5 @@
-import React, { useState ,useRef} from 'react';
-import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import React, { useState, useRef } from 'react';
+import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, Alert, Dimensions } from 'react-native';
 import axios from 'axios';
 import exampleImage from '../assets/splash.png';
 
@@ -20,7 +20,7 @@ const ScreenC = ({ navigation, route }) => {
     const handleContinue = async () => {
         const verificationCode = code.join('');
         try {
-            const response = await axios.post('http://192.168.0.15:5000/api/students/verify-email', {
+            const response = await axios.post('http://192.168.1.149:5000/api/students/verify-email', {
                 email,
                 verificationCode,
             });
@@ -39,7 +39,7 @@ const ScreenC = ({ navigation, route }) => {
 
     return (
         <View style={styles.container}>
-            <Image source={exampleImage} style={styles.logo} />
+            <Image source={exampleImage} style={styles.logo} resizeMode="contain" />
             <Text style={styles.title}>Créez votre profil</Text>
             <Text style={styles.subtitle}>Vérifions votre email</Text>
             <Text style={styles.instructions}>
@@ -65,64 +65,66 @@ const ScreenC = ({ navigation, route }) => {
     );
 };
 
+const { width, height } = Dimensions.get('window');
+
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-    backgroundColor: '#f5f5f5',
-  },
-  logo: {
-    width: 100,
-    height: 100,
-    marginBottom: 20,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    color: '#333',
-  },
-  subtitle: {
-    fontSize: 18,
-    marginBottom: 10,
-    color: '#666',
-  },
-  instructions: {
-    fontSize: 16,
-    textAlign: 'center',
-    marginBottom: 20,
-    color: '#666',
-    paddingHorizontal: 20,
-  },
-  codeInputContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '80%',
-    marginBottom: 20,
-  },
-  codeInput: {
-    width: 40,
-    height: 50,
-    borderColor: '#ddd',
-    borderWidth: 1,
-    borderRadius: 5,
-    textAlign: 'center',
-    fontSize: 18,
-  },
-  button: {
-    backgroundColor: '#20AD96',
-    paddingVertical: 15,
-    paddingHorizontal: 30,
-    borderRadius: 5,
-    alignItems: 'center',
-    width: '100%',
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 16,
-  },
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 20,
+        backgroundColor: '#f5f5f5',
+    },
+    logo: {
+        width: width * 0.5,
+        height: height * 0.2,
+        marginBottom: 20,
+    },
+    title: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginBottom: 10,
+        color: '#333',
+    },
+    subtitle: {
+        fontSize: 18,
+        marginBottom: 10,
+        color: '#666',
+    },
+    instructions: {
+        fontSize: 16,
+        textAlign: 'center',
+        marginBottom: 20,
+        color: '#666',
+        paddingHorizontal: 20,
+    },
+    codeInputContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        width: '80%',
+        marginBottom: 20,
+    },
+    codeInput: {
+        width: 40,
+        height: 50,
+        borderColor: '#ddd',
+        borderWidth: 1,
+        borderRadius: 5,
+        textAlign: 'center',
+        fontSize: 18,
+    },
+    button: {
+        backgroundColor: '#20AD96',
+        paddingVertical: 15,
+        paddingHorizontal: 30,
+        borderRadius: 5,
+        alignItems: 'center',
+        width: '100%',
+    },
+    buttonText: {
+        color: '#fff',
+        fontSize: 16,
+    },
 });
 
 export default ScreenC;

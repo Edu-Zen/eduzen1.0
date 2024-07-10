@@ -20,7 +20,7 @@ const ScreenE = ({ navigation }) => {
                 <Image
                     source={exampleImage}
                     style={styles.logo}
-                    resizeMode="contain" // Adjust the resizeMode as needed
+                    resizeMode="contain"   // Adjust the resizeMode as needed
                 />
             </View>
            <Text>En cours de création de votre expérience</Text>

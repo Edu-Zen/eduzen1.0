@@ -2,11 +2,14 @@ import React, { useState } from 'react';
 import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import axios from 'axios';
 import exampleImage from '../assets/splash.png';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 const ScreenB = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+    const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
 
     const handleContinue = async () => {
         if (password !== confirmPassword) {
@@ -15,34 +18,44 @@ const ScreenB = ({ navigation }) => {
         }
 
         try {
-          const response = await axios.post('http://192.168.0.15:5000/api/students/register', {
-              email,
-              password,
-              confirmPassword,
-          }, {
-              headers: {
-                  'Content-Type': 'application/json',
-              }
-          });
-  
-          // Assuming response.data contains the JSON response from the server
-          Alert.alert('Success', 'Registration successful, please check your email for verification code');
-          navigation.navigate('ScreenC', { email });
-      } catch (error) {
-          if (error.response) {
-              // The request was made and the server responded with a status code
-              // that falls out of the range of 2xx
-              Alert.alert('Error', error.response.data.message || 'Registration failed');
-          } else if (error.request) {
-              // The request was made but no response was received
-              Alert.alert('Error', 'No response received from server. Please try again.');
-          } else {
-              // Something happened in setting up the request that triggered an Error
-              console.error('Error', error.message);
-              Alert.alert('Error', 'An error occurred. Please try again.');
-          }
-      }
-  };
+            const response = await axios.post('http://192.168.1.149:5000/api/students/register', {
+                email,
+                password,
+                confirmPassword,
+            }, {
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+
+            // Assuming response.data contains the JSON response from the server
+            Alert.alert('Success', 'Registration successful, please check your email for verification code');
+            navigation.navigate('ScreenC', { email });
+        } catch (error) {
+            if (error.response) {
+                const errorMessage = error.response.data.message;
+                if (errorMessage === 'Student with given email already exists!') {
+                    Alert.alert('Error', 'Email already exists. Redirecting to login.');
+                    navigation.navigate('ScreenLogin');
+                } else {
+                    Alert.alert('Error', errorMessage || 'Registration failed');
+                }
+            } else if (error.request) {
+                Alert.alert('Error', 'No response received from server. Please try again.');
+            } else {
+                console.error('Error', error.message);
+                Alert.alert('Error', 'An error occurred. Please try again.');
+            }
+        }
+    };
+
+    const togglePasswordVisibility = () => {
+        setIsPasswordVisible(!isPasswordVisible);
+    };
+
+    const toggleConfirmPasswordVisibility = () => {
+        setIsConfirmPasswordVisible(!isConfirmPasswordVisible);
+    };
 
     return (
         <View style={styles.container}>
@@ -56,20 +69,30 @@ const ScreenB = ({ navigation }) => {
                 value={email}
                 onChangeText={setEmail}
             />
-            <TextInput 
-                style={styles.input} 
-                placeholder="Mot de passe" 
-                secureTextEntry 
-                value={password}
-                onChangeText={setPassword}
-            />
-            <TextInput 
-                style={styles.input} 
-                placeholder="Vérifiez votre mot de passe" 
-                secureTextEntry 
-                value={confirmPassword}
-                onChangeText={setConfirmPassword}
-            />
+            <View style={styles.passwordContainer}>
+                <TextInput 
+                    style={styles.passwordInput} 
+                    placeholder="Mot de passe" 
+                    secureTextEntry={!isPasswordVisible} 
+                    value={password}
+                    onChangeText={setPassword}
+                />
+                <TouchableOpacity onPress={togglePasswordVisibility} style={styles.iconContainer}>
+                    <Icon name={isPasswordVisible ? 'eye-off' : 'eye'} size={24} color="#888" />
+                </TouchableOpacity>
+            </View>
+            <View style={styles.passwordContainer}>
+                <TextInput 
+                    style={styles.passwordInput} 
+                    placeholder="Vérifiez votre mot de passe" 
+                    secureTextEntry={!isConfirmPasswordVisible} 
+                    value={confirmPassword}
+                    onChangeText={setConfirmPassword}
+                />
+                <TouchableOpacity onPress={toggleConfirmPasswordVisibility} style={styles.iconContainer}>
+                    <Icon name={isConfirmPasswordVisible ? 'eye-off' : 'eye'} size={24} color="#888" />
+                </TouchableOpacity>
+            </View>
             <TouchableOpacity style={styles.button} onPress={handleContinue}>
                 <Text style={styles.buttonText}>Continuer</Text>
             </TouchableOpacity>
@@ -77,52 +100,69 @@ const ScreenB = ({ navigation }) => {
     );
 };
 
-  
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-    backgroundColor: '#f5f5f5',
-  },
-  logo: {
-    width: 100,
-    height: 100,
-    marginBottom: 20,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    color: '#333',
-  },
-  subtitle: {
-    fontSize: 16,
-    color: '#666',
-    marginBottom: 20,
-  },
-  input: {
-    width: '100%',
-    height: 50,
-    borderColor: '#ddd',
-    borderWidth: 1,
-    borderRadius: 5,
-    paddingHorizontal: 10,
-    marginBottom: 10,
-  },
-  button: {
-    backgroundColor: '#20AD96',
-    paddingVertical: 15,
-    paddingHorizontal: 30,
-    borderRadius: 5,
-    alignItems: 'center',
-    width: '100%',
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 16,
-  },
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 20,
+        backgroundColor: '#f5f5f5',
+    },
+    logo: {
+        width: 100,
+        height: 100,
+        marginBottom: 20,
+    },
+    title: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginBottom: 10,
+        color: '#333',
+    },
+    subtitle: {
+        fontSize: 16,
+        color: '#666',
+        marginBottom: 20,
+    },
+    input: {
+        width: '100%',
+        height: 50,
+        borderColor: '#ddd',
+        borderWidth: 1,
+        borderRadius: 5,
+        paddingHorizontal: 10,
+        marginBottom: 10,
+    },
+    passwordContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        width: '100%',
+        height: 50,
+        borderColor: '#ddd',
+        borderWidth: 1,
+        borderRadius: 5,
+        marginBottom: 10,
+    },
+    passwordInput: {
+        flex: 1,
+        paddingHorizontal: 10,
+        height: '100%',
+    },
+    iconContainer: {
+        paddingHorizontal: 10,
+    },
+    button: {
+        backgroundColor: '#20AD96',
+        paddingVertical: 15,
+        paddingHorizontal: 30,
+        borderRadius: 5,
+        alignItems: 'center',
+        width: '100%',
+    },
+    buttonText: {
+        color: '#fff',
+        fontSize: 16,
+    },
 });
 
 export default ScreenB;

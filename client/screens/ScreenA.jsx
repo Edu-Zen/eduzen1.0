@@ -1,6 +1,6 @@
 // screens/ScreenA.js
 import React from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, Image, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 import exampleImage from '../assets/splash.png';
 
 const ScreenA = ({ navigation }) => {
@@ -9,6 +9,7 @@ const ScreenA = ({ navigation }) => {
       <Image 
         source={exampleImage} 
         style={styles.image} 
+        resizeMode="contain" 
       />
       <Text style={styles.welcomeText}>Bienvenue</Text>
       <Text style={styles.instructionText}>Avant de commencer, veuillez identifier votre profil</Text>
@@ -25,6 +26,8 @@ const ScreenA = ({ navigation }) => {
   );
 };
 
+const { width, height } = Dimensions.get('window');
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -34,8 +37,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f5f5',
   },
   image: {
-    width: 250,
-    height: 300,
+    width: width * 0.4,
+    height: height * 0.3,
     marginBottom: 20,
   },
   welcomeText: {

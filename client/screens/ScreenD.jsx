@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, Alert, Button, Platform } from 'react-native';
+import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, Alert, Button, Platform, Modal, Dimensions } from 'react-native';
 import axios from 'axios';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { Picker } from '@react-native-picker/picker'; // import Picker
 import exampleImage from '../assets/splash.png';
+
+const { width, height } = Dimensions.get('window');
 
 const ScreenD = ({ navigation, route }) => {
     const { email } = route.params;
@@ -14,8 +17,7 @@ const ScreenD = ({ navigation, route }) => {
 
     const handleContinue = async () => {
         try {
-        
-            const response = await axios.post(`http://192.168.0.15:5000/api/students/update/${email}`, {
+            const response = await axios.post(`http://192.168.1.149:5000/api/students/update/${email}`, {
                 firstName,
                 lastName,
                 birthDate: birthDate.toISOString().split('T')[0], // format date to YYYY-MM-DD
@@ -25,7 +27,7 @@ const ScreenD = ({ navigation, route }) => {
             navigation.navigate('ScreenE');
         } catch (error) {
             if (error.response) {
-                console.log(error)
+                console.log(error);
                 Alert.alert('Error', error.response.data.message);
             } else if (error.request) {
                 Alert.alert('Error', 'No response from server. Please try again later.');
@@ -62,24 +64,50 @@ const ScreenD = ({ navigation, route }) => {
                 value={lastName}
                 onChangeText={setLastName}
             />
-            <TouchableOpacity onPress={showDatepicker}>
-                <Text style={[styles.input, styles.dateInput]}>{birthDate.toISOString().split('T')[0]}</Text>
+            <TouchableOpacity style={styles.dateTouchable} onPress={showDatepicker}>
+                <Text style={styles.dateText}>{birthDate.toISOString().split('T')[0]}</Text>
             </TouchableOpacity>
             {showDatePicker && (
-                <DateTimePicker
-                    testID="dateTimePicker"
-                    value={birthDate}
-                    mode="date"
-                    display="default"
-                    onChange={onChange}
-                />
+                Platform.OS === 'ios' ? (
+                    <Modal
+                        transparent={true}
+                        animationType="slide"
+                        visible={showDatePicker}
+                        onRequestClose={() => setShowDatePicker(false)}
+                    >
+                        <View style={styles.modalContainer}>
+                            <View style={styles.modalContent}>
+                                <DateTimePicker
+                                    value={birthDate}
+                                    mode="date"
+                                    display="default"
+                                    onChange={onChange}
+                                />
+                                <Button title="Done" onPress={() => setShowDatePicker(false)} />
+                            </View>
+                        </View>
+                    </Modal>
+                ) : (
+                    <DateTimePicker
+                        testID="dateTimePicker"
+                        value={birthDate}
+                        mode="date"
+                        display="default"
+                        onChange={onChange}
+                    />
+                )
             )}
-            <TextInput
-                placeholder="Genre"
-                style={styles.input}
-                value={genre}
-                onChangeText={setGenre}
-            />
+            <View style={styles.pickerContainer}>
+                <Picker
+                    selectedValue={genre}
+                    style={styles.picker}
+                    onValueChange={(itemValue) => setGenre(itemValue)}
+                >
+                    <Picker.Item label="Male" value="Male" />
+                    <Picker.Item label="Female" value="Female" />
+                    <Picker.Item label="Others" value="Others" />
+                </Picker>
+            </View>
             <TouchableOpacity style={styles.button} onPress={handleContinue}>
                 <Text style={styles.buttonText}>Continuer</Text>
             </TouchableOpacity>
@@ -92,47 +120,88 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        paddingHorizontal: 20,
-        backgroundColor: '#FFFFFF', // Example background color
+        padding: width * 0.05,
+        backgroundColor: '#f0f0f0',
     },
     logo: {
-        width: 200,
-        height: 200,
-        marginBottom: 20,
+        width: width * 0.45,
+        height: width * 0.5,
+        marginBottom: height * 0.02,
     },
     title: {
-        fontSize: 24,
+        fontSize: width * 0.06,
         fontWeight: 'bold',
-        marginBottom: 10,
+        marginBottom: height * 0.01,
+        color: '#333',
     },
     subtitle: {
-        fontSize: 18,
-        marginBottom: 20,
+        fontSize: width * 0.045,
+        marginBottom: height * 0.02,
+        color: '#666',
     },
     input: {
         width: '100%',
-        height: 50,
+        height: height * 0.06,
         borderColor: '#ddd',
         borderWidth: 1,
         borderRadius: 5,
-        paddingHorizontal: 10,
-        marginBottom: 10,
+        paddingHorizontal: width * 0.03,
+        marginBottom: height * 0.01,
+        backgroundColor: '#fff',
     },
-    dateInput: {
+    dateTouchable: {
+        width: '100%',
+        height: height * 0.06,
+        borderColor: '#ddd',
+        borderWidth: 1,
+        borderRadius: 5,
         justifyContent: 'center',
-        textAlign: 'center',
+        alignItems: 'center',
+        marginBottom: height * 0.01,
+        backgroundColor: '#fff',
+    },
+    dateText: {
+        fontSize: width * 0.045,
+        color: '#333',
+    },
+    pickerContainer: {
+        width: '100%',
+        height: height * 0.06,
+        borderColor: '#ddd',
+        borderWidth: 1,
+        borderRadius: 5,
+        marginBottom: height * 0.02,
+        justifyContent: 'center',
+        backgroundColor: '#fff',
+    },
+    picker: {
+        height: height * 0.06,
+        width: '100%',
     },
     button: {
         backgroundColor: '#20AD96',
-        paddingVertical: 15,
-        paddingHorizontal: 30,
+        paddingVertical: height * 0.02,
+        paddingHorizontal: width * 0.1,
         borderRadius: 5,
         alignItems: 'center',
         width: '100%',
     },
     buttonText: {
         color: '#fff',
-        fontSize: 16,
+        fontSize: width * 0.045,
+    },
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    modalContent: {
+        width: width * 0.8,
+        padding: height * 0.03,
+        backgroundColor: '#fff',
+        borderRadius: 10,
+        alignItems: 'center',
     },
 });
 
