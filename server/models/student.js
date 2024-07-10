@@ -4,11 +4,10 @@ const Joi = require("joi");
 const passwordComplexity = require("joi-password-complexity");
 
 const studentSchema = new mongoose.Schema({
-  firstName: { type: String },
-  lastName: { type: String },
-  email: { type: String, required: true },
+  firstName: { type: String, required: false },
+  lastName: { type: String, required: false },
+  email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  confirmPassword: { type: String, required: true },
   verified: { type: Boolean, default: false },
   genre: { type: String, enum: ['Male', 'Female', 'Other'] },
   birthDate: { type: Date },
@@ -22,13 +21,13 @@ studentSchema.methods.generateAuthToken = function () {
   return token;
 };
 
-const Student = mongoose.model("student", studentSchema);
+const Student = mongoose.model("Student", studentSchema);
 
 const validate = (data) => {
   const schema = Joi.object({
     email: Joi.string().email().required().label("Email"),
     password: passwordComplexity().required().label("Password"),
-    confirmPassword: Joi.ref('password'),
+    confirmPassword: Joi.string().valid(Joi.ref('password')).required().label("Confirm Password")
   });
   return schema.validate(data);
 };

@@ -6,16 +6,21 @@ const sendEmail = require("../utils/sendEmail");
 
 // Function to generate a 6-digit verification code
 function generateVerificationCode() {
-    return Math.floor(100000 + Math.random() * 900000).toString();
+  return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
 router.post("/register", async (req, res) => {
   try {
-    const { error } = validate(req.body); // Validate request body
-    if (error) return res.status(400).send({ message: error.details[0].message });
+    console.log("first");
+    const { error } = validate(req.body);
+    if (error)
+      return res.status(400).send({ message: error.details[0].message });
 
     let student = await Student.findOne({ email: req.body.email });
-    if (student) return res.status(409).send({ message: "Student with given email already exists!" });
+    if (student)
+      return res
+        .status(409)
+        .send({ message: "Student with given email already exists!" });
 
     const salt = await bcrypt.genSalt(Number(process.env.SALT));
     const hashPassword = await bcrypt.hash(req.body.password, salt);
@@ -25,102 +30,113 @@ router.post("/register", async (req, res) => {
 
     // Save student details and verification code
     student = await new Student({
-      email: req.body.email,
+      ...req.body,
       password: hashPassword,
-      confirmPassword: req.body.confirmPassword,
-      verificationCode: verificationCode
+      verificationCode,
     }).save();
 
     // Send email with verification code
-    await sendEmail(student.email, "Verify Email", `Your verification code is: ${verificationCode}`);
+    await sendEmail(
+      student.email,
+      "Verify Email",
+      `Your verification code is: ${verificationCode}`
+    );
 
-    res.status(201).send({ message: "An Email sent to your account please verify" });
+    res
+      .status(201)
+      .send({ message: "An Email sent to your account please verify" });
   } catch (error) {
     console.log(error);
     res.status(500).send({ message: "Internal Server Error" });
   }
 });
+
 // Get a student by ID
-router.get('/:id', async (req, res) => {
+router.get("/:id", async (req, res) => {
   try {
     const student = await Student.findById(req.params.id);
     if (!student) {
-      return res.status(404).send('Student not found');
+      return res.status(404).send("Student not found");
     }
     res.status(200).json(student);
   } catch (err) {
-    res.status(500).send('Server error');
+    res.status(500).send("Server error");
   }
 });
 
-
 // Get a student by Email
-router.get('/email/:email', async (req, res) => {
+router.get("/email/:email", async (req, res) => {
   try {
     const student = await Student.findOne({ email: req.params.email });
     if (!student) {
-      return res.status(404).send('Student not found');
+      return res.status(404).send("Student not found");
     }
     res.status(200).json(student);
   } catch (err) {
     console.error(err);
-    res.status(500).send('Server error');
+    res.status(500).send("Server error");
   }
 });
 
-
 // Get all students
-router.get('/', async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const students = await Student.find();
     res.status(200).json(students);
   } catch (err) {
-    res.status(500).send('Server error');
+    res.status(500).send("Server error");
   }
 });
 
+// Update a student by Email
 
+router.post("/update/:email", async (req, res) => {
+  const { firstName, lastName, birthDate, genre } = req.body;
+  try {
+    console.log("eeeeeeeeeee");
+    const student = await Student.findOneAndUpdate(
+      { email: req.params.email },
+      { firstName, lastName, birthDate, genre },
+      { new: true }
+    );
+    if (!student) {
+      return res.status(404).send("Student not found");
+    }
+    res.status(200).json(student);
+  } catch (err) {
+    res.status(500).send("Server error");
+  }
+});
 
 // Add this route to your existing router in the backend
 router.post("/verify-email", async (req, res) => {
   try {
-      const { email, verificationCode } = req.body;
-      
-      // Find the student by email
-      const student = await Student.findOne({ email });
-      if (!student) {
-          return res.status(404).send({ message: "Student not found" });
-      }
-      
-      // Check if verification code matches
-      if (student.verificationCode !== parseInt(verificationCode)) {
-          return res.status(400).send({ message: "Invalid verification code" });
-      }
-      
-      // Update student to mark as verified
-      student.verified = true;
-      student.verificationCode = null; // Clear verification code
-      await student.save();
-      
-      res.status(200).send({ message: "Email verified successfully" });
+    const { email, verificationCode } = req.body;
+
+    // Find the student by email
+    const student = await Student.findOne({ email });
+    if (!student) {
+      return res.status(404).send({ message: "Student not found" });
+    }
+
+    // Check if verification code matches
+    if (student.verificationCode !== parseInt(verificationCode)) {
+      return res.status(400).send({ message: "Invalid verification code" });
+    }
+
+    // Update student to mark as verified
+    student.verified = true;
+    student.verificationCode = null; // Clear verification code
+    await student.save();
+
+    res.status(200).send({ message: "Email verified successfully" });
   } catch (error) {
-      console.error(error);
-      res.status(500).send({ message: "Internal Server Error" });
+    console.error(error);
+    res.status(500).send({ message: "Internal Server Error" });
   }
 });
 
-
 module.exports = router;
-
-
-
-
-
-
-
-
-
-
 
 // const express = require('express');
 // const mongoose = require('mongoose');
