@@ -12,12 +12,13 @@ import Agenda from './screens/Agenda';
 import Add from './screens/Add';
 import ChatBot from './screens/ChatBot';
 import HeartScreen from './screens/HeartScreen';
+import ScreenLogin from './screens/ScreenLogin';
 const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="ScreenB">
+      <Stack.Navigator initialRouteName="ScreenA">
         <Stack.Screen options={{headerShown: false }} name="Home" component={HomeScreen} />
       
         <Stack.Screen options={{
@@ -48,7 +49,9 @@ export default function App() {
             headerShown: false 
           }} name="Bien-étre" component={HeartScreen} />
 
-     
+<Stack.Screen options={{
+            headerShown: false 
+          }} name="ScreenLogin" component={ScreenLogin} />
 
 
 
