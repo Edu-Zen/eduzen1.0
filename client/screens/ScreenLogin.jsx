@@ -52,7 +52,7 @@ const ScreenLogin = ({ navigation }) => {
             <TouchableOpacity style={styles.button} onPress={handleLogin}>
                 <Text style={styles.buttonText}>Login</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => navigation.navigate('ScreenRegister')}>
+            <TouchableOpacity onPress={() => navigation.navigate('ScreenE')}>
                 <Text style={styles.registerText}>Don't have an account? Register</Text>
             </TouchableOpacity>
         </View>
