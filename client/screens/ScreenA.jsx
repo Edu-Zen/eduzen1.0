@@ -1,71 +1,100 @@
-// screens/ScreenA.js
 import React from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
-import exampleImage from '../assets/splash.png';
-
-const ScreenA = ({ navigation }) => {
-  return (
-    <View style={styles.container}>
-      <Image 
-        source={exampleImage} 
-        style={styles.image} 
-        resizeMode="contain" 
-      />
-      <Text style={styles.welcomeText}>Bienvenue</Text>
-      <Text style={styles.instructionText}>Avant de commencer, veuillez identifier votre profil</Text>
-      <TouchableOpacity style={styles.button}  onPress={() => navigation.navigate('ScreenB')} >
-        <Text style={styles.buttonText}>Etudiant</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.button} onPress={() => console.log('Button 2 pressed')}>
-        <Text style={styles.buttonText}>Ecole</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.button} onPress={() => console.log('Button 3 pressed')}>
-        <Text style={styles.buttonText}>Coach</Text>
-      </TouchableOpacity>
-    </View>
-  );
-};
+import { View, TouchableOpacity, StyleSheet, Image, Dimensions } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import homeIcon from '../assets/home/Home.png';
+import agendaIcon from '../assets/home/agenda.png';
+import addIcon from '../assets/home/add.png';
+import heartIcon from '../assets/home/heart.png';
+import diamondIcon from '../assets/home/diamond.png'; // Corrected spelling
 
 const { width, height } = Dimensions.get('window');
+const iconSize = width * 0.07; // Adjust size relative to screen width
+const tabHeight = height * 0.08; // Adjust height relative to screen height
+
+const BottomNavBar = ({ navigation, currentScreen }) => {
+    const routes = [
+        { name: 'Home', icon: homeIcon, route: 'Home' },
+        { name: 'Agenda', icon: agendaIcon, route: 'Agenda' },
+        { name: 'Add', icon: addIcon, route: 'Add' },
+        { name: 'Heart', icon: heartIcon, route: 'Bien-étre' },
+        { name: 'Diamond', icon: diamondIcon, route: 'PremiumScreen' },
+    ];
+
+    const navigateToScreen = (routeName) => {
+        navigation.navigate(routeName);
+    };
+
+    return (
+        <View style={styles.container}>
+            {routes.map((route, index) => {
+                const isActive = currentScreen === route.route;
+                return (
+                    <TouchableOpacity
+                        key={index}
+                        style={styles.tab}
+                        onPress={() => navigateToScreen(route.route)}
+                    >
+                        {isActive ? (
+                            <LinearGradient
+                                colors={['#3A98F5', '#00E9B8']}
+                                start={{ x: 0, y: 0 }}
+                                end={{ x: 1, y: 1 }}
+                                style={styles.activeTab}
+                            >
+                                <Image
+                                    source={route.icon}
+                                    style={[styles.icon, styles.activeIcon]}
+                                />
+                            </LinearGradient>
+                        ) : (
+                            <Image
+                                source={route.icon}
+                                style={styles.icon}
+                            />
+                        )}
+                    </TouchableOpacity>
+                );
+            })}
+        </View>
+    );
+};
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-    backgroundColor: '#f5f5f5',
-  },
-  image: {
-    width: width * 0.4,
-    height: height * 0.3,
-    marginBottom: 20,
-  },
-  welcomeText: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    color: '#333',
-  },
-  instructionText: {
-    fontSize: 18,
-    textAlign: 'center',
-    marginBottom: 20,
-    color: '#666',
-    paddingHorizontal: 20,
-  },
-  button: {
-    backgroundColor: '#2F2B4A',
-    padding: 10,
-    marginVertical: 10,
-    width: '80%',
-    alignItems: 'center',
-    borderRadius: 5,
-  },
-  buttonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-  },
+    container: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        alignItems: 'center',
+        backgroundColor: '#FFFFFF',
+        borderTopWidth: 1,
+        borderTopColor: '#CCCCCC',
+        height: tabHeight,
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        right: 0,
+    },
+    tab: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingVertical: 10,
+    },
+    activeTab: {
+        borderRadius: 10,
+        paddingVertical: 10,
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: iconSize * 10, // Increase size for active tab
+        height: iconSize * 4, // Increase size for active tab
+    },
+    icon: {
+        width: iconSize,
+        height: iconSize,
+        resizeMode: 'contain',
+    },
+    activeIcon: {
+        tintColor: '#FFFFFF', // Adjust icon color for active tab
+    },
 });
 
-export default ScreenA;
+export default BottomNavBar;

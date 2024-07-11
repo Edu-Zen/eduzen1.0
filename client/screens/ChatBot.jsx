@@ -1,6 +1,5 @@
-// ChatBot.js
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TextInput, Button, ScrollView, Image } from 'react-native'; // Import Image
+import { StyleSheet, Text, View, TextInput, Button, ScrollView, Image } from 'react-native';
 import axios from 'axios';
 
 function ChatBot() {
@@ -8,38 +7,36 @@ function ChatBot() {
     const [messages, setMessages] = useState([]);
     const [showResponseImage, setShowResponseImage] = useState(false);
 
-    useEffect(() => {
-        const fetchResponse = async () => {
-            try {
-                setShowResponseImage(true); // Show response image
-                const response = await axios.post('http://<YOUR_SERVER_URL>/dialogflow', { query });
-                setMessages([...messages, { text: query, isUser: true }, { text: response.data.response, isUser: false }]);
-                setQuery('');
-            } catch (error) {
-                console.error(error);
-            } finally {
-                setTimeout(() => {
-                    setShowResponseImage(false); // Revert back to original image
-                }, 2000); // Adjust the delay time as needed (in milliseconds)
-            }
-        };
+    const sendMessage = async () => {
+        if (query.trim() === '') return;
 
-        if (query !== '') {
-            fetchResponse();
+        setMessages([...messages, { text: query, isUser: true }]);
+        setQuery('');
+
+        try {
+            setShowResponseImage(true); // Show response image
+            const response = await axios.post('http://192.168.1.149:3000/chatbot', { query });
+            setMessages(prevMessages => [...prevMessages, { text: response.data.response, isUser: false }]);
+        } catch (error) {
+            console.error(error);
+            setMessages(prevMessages => [...prevMessages, { text: 'Error processing request', isUser: false }]);
+        } finally {
+            setTimeout(() => {
+                setShowResponseImage(false); // Revert back to original image
+            }, 2000); // Adjust the delay time as needed (in milliseconds)
         }
-    }, [query]);
+    };
 
     return (
         <View style={styles.container}>
-            {/* Dynamic Image component */}
             {showResponseImage ? (
                 <Image
-                    source={require('../assets/home/Zed2.png')} // Replace with your response image URL
+                    source={require('../assets/home/Zed2.png')}
                     style={styles.headerImage}
                 />
             ) : (
                 <Image
-                    source={require('../assets/home/Zed.png')} // Replace with your original image URL
+                    source={require('../assets/home/Zed.png')}
                     style={styles.headerImage}
                 />
             )}
@@ -64,7 +61,7 @@ function ChatBot() {
                     onChangeText={setQuery}
                     placeholder="Type your message..."
                 />
-                <Button title="Send" onPress={() => setQuery(query)} />
+                <Button title="Send" onPress={sendMessage} />
             </View>
         </View>
     );
@@ -76,10 +73,10 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
     },
     headerImage: {
-        width: '80%', // Adjust width as needed
-        height: 200, // Adjust height as needed
-        resizeMode: 'cover', // Image cover style
-        alignSelf: 'center', // Center horizontally
+        width: '80%',
+        height: 200,
+        resizeMode: 'cover',
+        alignSelf: 'center',
     },
     messagesContainer: {
         flex: 1,
