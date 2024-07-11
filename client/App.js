@@ -19,18 +19,12 @@ const Stack = createNativeStackNavigator();
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="home">
+      <Stack.Navigator initialRouteName="ScreenA">
         <Stack.Screen options={{headerShown: false }} name="Home" component={HomeScreen} />
       
-        <Stack.Screen options={{
-            headerShown: false 
-          }} name="ScreenA" component={ScreenA} />
-        <Stack.Screen options={{
-            headerShown: false 
-          }} name="ScreenB" component={ScreenB} />
-        <Stack.Screen options={{
-            headerShown: false 
-          }} name="ScreenC" component={ScreenC} />
+        <Stack.Screen options={{     headerShown: false      }} name="ScreenA" component={ScreenA} />
+        <Stack.Screen options={{    headerShown: false     }} name="ScreenB" component={ScreenB} />
+        <Stack.Screen options={{     headerShown: false    }} name="ScreenC" component={ScreenC} />
         <Stack.Screen options={{
             headerShown: false 
           }} name="ScreenD" component={ScreenD} />
