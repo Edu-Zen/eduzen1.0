@@ -1,23 +1,25 @@
 import React from 'react';
-import { View, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { View, TouchableOpacity, StyleSheet, Image, Dimensions } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import homeIcon from '../assets/home/Home.png';
 import agendaIcon from '../assets/home/agenda.png';
 import addIcon from '../assets/home/add.png';
 import heartIcon from '../assets/home/heart.png';
 import diamondIcon from '../assets/home/diamond.png'; // Corrected spelling
 
+const { width, height } = Dimensions.get('window');
+const iconSize = width * 0.07; // Adjust size relative to screen width
+const tabHeight = height * 0.08; // Adjust height relative to screen height
+
 const BottomNavBar = ({ navigation, currentScreen }) => {
-    // Define navigation routes and icon paths
     const routes = [
         { name: 'Home', icon: homeIcon, route: 'Home' },
         { name: 'Agenda', icon: agendaIcon, route: 'Agenda' },
         { name: 'Add', icon: addIcon, route: 'Add' },
         { name: 'Heart', icon: heartIcon, route: 'Bien-étre' },
-        { name: 'Diamond', icon: diamondIcon, route: 'DiamondScreen' },
-        // Add more routes as needed
+        { name: 'Diamond', icon: diamondIcon, route: 'PremiumScreen' },
     ];
 
-    // Function to handle navigation to selected route
     const navigateToScreen = (routeName) => {
         navigation.navigate(routeName);
     };
@@ -25,19 +27,31 @@ const BottomNavBar = ({ navigation, currentScreen }) => {
     return (
         <View style={styles.container}>
             {routes.map((route, index) => {
-                // Check if the current route matches the current screen
                 const isActive = currentScreen === route.route;
-                console.log(`Current screen: ${currentScreen}, Route: ${route.route}, Is active: ${isActive}`);
                 return (
                     <TouchableOpacity
                         key={index}
-                        style={[styles.tab, isActive && styles.activeTab]} // Apply activeTab style if isActive is true
+                        style={styles.tab}
                         onPress={() => navigateToScreen(route.route)}
                     >
-                        <Image
-                            source={route.icon}
-                            style={[styles.icon, isActive && styles.activeIcon]}
-                        />
+                        {isActive ? (
+                            <LinearGradient
+                                colors={['#3A98F5', '#00E9B8']}
+                                start={{ x: 0, y: 0 }}
+                                end={{ x: 1, y: 1 }}
+                                style={styles.activeTab}
+                            >
+                                <Image
+                                    source={route.icon}
+                                    style={[styles.icon, styles.activeIcon]}
+                                />
+                            </LinearGradient>
+                        ) : (
+                            <Image
+                                source={route.icon}
+                                style={styles.icon}
+                            />
+                        )}
                     </TouchableOpacity>
                 );
             })}
@@ -53,7 +67,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFFFFF',
         borderTopWidth: 1,
         borderTopColor: '#CCCCCC',
-        height: 60,
+        height: tabHeight,
         position: 'absolute',
         bottom: 0,
         left: 0,
@@ -66,13 +80,16 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
     },
     activeTab: {
-        backgroundColor: '#20AD96', // Adjust background color for active tab
         borderRadius: 10,
         paddingVertical: 10,
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: iconSize * 2, // Increase size for active tab
+        height: iconSize * 2, // Increase size for active tab
     },
     icon: {
-        width: 24,
-        height: 24,
+        width: iconSize,
+        height: iconSize,
         resizeMode: 'contain',
     },
     activeIcon: {
