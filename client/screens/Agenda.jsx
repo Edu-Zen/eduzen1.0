@@ -13,7 +13,7 @@ import { Calendar } from "react-native-calendars";
 import { useNavigation } from "@react-navigation/native";
 import BottomNavBar from "../components/BottomNavBar"; // Ensure you have this component in your project
 import Sidebar from "../components/Sidebar"; // Import the Sidebar component
-
+import UpperNavBar from "../components/UpperNavBar";
 // Replace this with your actual image URL or local asset path
 const menuIcon = require("../assets/dd.png");
 
@@ -51,8 +51,11 @@ const Agenda = ({ navigation, route }) => {
   });
 
   return (
+   
     <TouchableWithoutFeedback onPress={closeSidebar}>
+      
       <View style={styles.container}>
+     
         {!isSidebarOpen && ( // Render menu icon only if sidebar is not open
           <TouchableOpacity
             style={styles.menuIconContainer}
@@ -67,7 +70,9 @@ const Agenda = ({ navigation, route }) => {
           <Sidebar />
         </Animated.View>
         <View style={styles.mainContent}>
+        
           <View style={styles.calendarContainer}>
+         
             <Calendar
             // Calendar props as before
             // ...
