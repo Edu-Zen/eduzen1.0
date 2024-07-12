@@ -1,18 +1,19 @@
 import React, { useEffect } from 'react';
-import { View, Image, ActivityIndicator, StyleSheet, Dimensions ,Text} from 'react-native';
+import { View, Image, ActivityIndicator, StyleSheet, Dimensions, Text } from 'react-native';
 import exampleImage from '../assets/splash.png';
 
-const ScreenE = ({ navigation }) => {
+const ScreenE = ({ navigation, route }) => {
+    const { email } = route.params; // Destructure email from route.params
+
     // Navigate to HomeScreen after 5 seconds
     useEffect(() => {
         const timer = setTimeout(() => {
-            navigation.replace('Home');
-            console.log("here passing")
-             // Replace current screen with HomeScreen
-        }, 4000); // 5000 milliseconds = 5 seconds
+            navigation.replace('Home', { email });
+            console.log("Passing email to Home screen:", email);
+        }, 4000); // 4000 milliseconds = 4 seconds
 
         return () => clearTimeout(timer); // Cleanup on unmount
-    }, [navigation]);
+    }, [navigation, email]);
 
     return (
         <View style={styles.container}>

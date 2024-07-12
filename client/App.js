@@ -14,6 +14,7 @@ import ChatBot from './screens/ChatBot';
 import HeartScreen from './screens/HeartScreen';
 import ScreenLogin from './screens/ScreenLogin';
 import PremiumScreen from './screens/PremiumScreen';
+import CardDetails from './screens/CardDetails';
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -52,7 +53,7 @@ export default function App() {
           }} name="PremiumScreen" component={PremiumScreen} />
 
 
-
+<Stack.Screen name="CardDetails" component={CardDetails} />
 
       </Stack.Navigator>
     </NavigationContainer>

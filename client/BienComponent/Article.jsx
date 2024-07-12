@@ -1,24 +1,32 @@
+// Articles.js
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, FlatList, StyleSheet, Dimensions } from 'react-native';
+import Card from '../screens/Card';
 
-const Articles = () => {
+const { width } = Dimensions.get('window');
+
+const Articles = ({ data }) => {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Articles</Text>
+      <FlatList
+        data={data}
+        renderItem={({ item }) => <Card item={item} />}
+        keyExtractor={(item, index) => index.toString()}
+        contentContainerStyle={styles.contentContainer}
+      />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    // flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    flex: 1,
     backgroundColor: '#f0f0f0',
+    paddingTop: 20,
+    width: width,
   },
-  text: {
-    fontSize: 24,
-    fontWeight: 'bold',
+  contentContainer: {
+    alignItems: 'center',
   },
 });
 
