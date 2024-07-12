@@ -136,6 +136,66 @@ router.post("/verify-email", async (req, res) => {
   }
 });
 
+ // Get all students
+router.get('/', async (req, res) => {
+  try {
+    const students = await Student.find();
+    res.status(200).json(students);
+  } catch (err) {
+    res.status(500).send('Server error');
+  }
+});
+
+
+// get student by id
+
+router.get('/:id', async (req, res) => {
+  try {
+    const student = await Student.findById(req.params.id);
+    if (!student) {
+      return res.status(404).send('Student not found');
+    }
+    res.status(200).json(student);
+  } catch (err) {
+    res.status(500).send('Server error');
+  }
+});
+
+
+// // Update a student by ID
+router.put('/:id', async (req, res) => {
+  const { email, password, firstName, lastName, birthDate, genre } = req.body;
+
+  try {
+    let student = await Student.findById(req.params.id);
+    if (!student) {
+      return res.status(404).send('Student not found');
+    }
+    student.email = email;
+    student.password = password;
+    student.firstName = firstName;
+    student.lastName = lastName;
+    student.birthDate = birthDate;
+    student.genre = genre;
+    await student.save();
+    res.status(200).json(student);
+  } catch (err) {
+    res.status(500).send('Server error');
+  }
+});
+
+
+router.get('/email/:email', async (req, res) => {
+  try {
+    const student = await Student.findOne({ email: req.params.email });
+    if (!student) {
+      return res.status(404).send('Student not found');
+    }
+    res.status(200).json(student);
+  } catch (err) {
+    res.status(500).send('Server error');
+  }
+});
 module.exports = router;
 
 // const express = require('express');

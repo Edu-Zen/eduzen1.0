@@ -14,23 +14,18 @@ import ChatBot from './screens/ChatBot';
 import HeartScreen from './screens/HeartScreen';
 import ScreenLogin from './screens/ScreenLogin';
 import PremiumScreen from './screens/PremiumScreen';
+import CardDetails from './screens/CardDetails';
 const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="ScreenA">
-        <Stack.Screen options={{headerShown: false }} name="Home" component={ScreenA} />
+        <Stack.Screen options={{headerShown: false }} name="Home" component={HomeScreen} />
       
-        <Stack.Screen options={{
-            headerShown: false 
-          }} name="ScreenA" component={ScreenA} />
-        <Stack.Screen options={{
-            headerShown: false 
-          }} name="ScreenB" component={ScreenB} />
-        <Stack.Screen options={{
-            headerShown: false 
-          }} name="ScreenC" component={ScreenC} />
+        <Stack.Screen options={{     headerShown: false      }} name="ScreenA" component={ScreenA} />
+        <Stack.Screen options={{    headerShown: false     }} name="ScreenB" component={ScreenB} />
+        <Stack.Screen options={{     headerShown: false    }} name="ScreenC" component={ScreenC} />
         <Stack.Screen options={{
             headerShown: false 
           }} name="ScreenD" component={ScreenD} />
@@ -58,7 +53,7 @@ export default function App() {
           }} name="PremiumScreen" component={PremiumScreen} />
 
 
-
+<Stack.Screen name="CardDetails" component={CardDetails} />
 
       </Stack.Navigator>
     </NavigationContainer>

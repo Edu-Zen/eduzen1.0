@@ -18,7 +18,7 @@ const ScreenLogin = ({ navigation }) => {
                 password,
             });
             Alert.alert('Success', 'Login successful');
-            navigation.navigate('Home'); // Replace with your actual home screen name
+            navigation.navigate('Home', {email}); // Replace with your actual home screen name
         } catch (error) {
             if (error.response) {
                 Alert.alert('Error', error.response.data.message);
@@ -52,7 +52,7 @@ const ScreenLogin = ({ navigation }) => {
             <TouchableOpacity style={styles.button} onPress={handleLogin}>
                 <Text style={styles.buttonText}>Login</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => navigation.navigate('ScreenE')}>
+            <TouchableOpacity onPress={() => navigation.navigate('ScreenB' , {email})}>
                 <Text style={styles.registerText}>Don't have an account? Register</Text>
             </TouchableOpacity>
         </View>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, Alert , Dimensions} from 'react-native';
 import axios from 'axios';
 import exampleImage from '../assets/splash.png';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -11,7 +11,7 @@ const ScreenB = ({ navigation }) => {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
     const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
-
+    
     const handleContinue = async () => {
       if (password !== confirmPassword) {
           Alert.alert('Error', 'Passwords do not match');
@@ -29,6 +29,8 @@ const ScreenB = ({ navigation }) => {
                     'Content-Type': 'application/json',
                 }
             });
+
+            
 
             // Assuming response.data contains the JSON response from the server
             Alert.alert('Success', 'Registration successful, please check your email for verification code');
@@ -98,9 +100,17 @@ const ScreenB = ({ navigation }) => {
             <TouchableOpacity style={styles.button} onPress={handleContinue}>
                 <Text style={styles.buttonText}>Continuer</Text>
             </TouchableOpacity>
+
+            <TouchableOpacity onPress={() => navigation.navigate('ScreenLogin')}>
+                <Text style={styles.loginText}>Already have an account? Sign-in</Text>
+            </TouchableOpacity>
+
         </View>
+
     );
 };
+
+const { width } = Dimensions.get('window');
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -163,6 +173,10 @@ const styles = StyleSheet.create({
     buttonText: {
         color: '#fff',
         fontSize: 16,
+    },
+    loginText: {
+        color: '#20AD96',
+        fontSize: width * 0.045,
     },
 });
 

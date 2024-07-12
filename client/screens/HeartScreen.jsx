@@ -7,6 +7,46 @@ import Articles from "../BienComponent/Article";
 import Astuces from "../BienComponent/Astuces";
 import Exercices from "../BienComponent/Exercices";
 
+const data = [
+  {
+    title: 'Comment faire le bon choix pour son futur métier',
+    image: { uri: 'https://www.sciforma.com/wp-content/uploads/2022/03/Screen-Shot-2022-06-01-at-4.28.51-PM-1024x578.png' },
+    points: 50,
+    category: 'Article',
+  },
+  {
+    title: 'Comment faire le bon choix pour son futur métier',
+    image: { uri: 'https://www.yarooms.com/hubfs/1-Sep-15-2023-02-45-09-1809-PM.png' },
+    points: 50,
+    category: 'Astuces',
+  },
+  {
+    title: 'Comment faire le bon choix pour son futur métier',
+    image: { uri: 'https://www.avocor.com/wp-content/uploads/2018/09/7-examples-of-teamwork-collaboration-in-the-workplace-featured-image.png' },
+    points: 50,
+    category: 'Exercices',
+  },
+  {
+    title: 'Comment faire le bon choix pour son futur métier',
+    image: { uri: 'https://www.sciforma.com/wp-content/uploads/2022/03/Screen-Shot-2022-06-01-at-4.28.51-PM-1024x578.png' },
+    points: 50,
+    category: 'Article',
+  },
+  {
+    title: 'Comment faire le bon choix pour son futur métier',
+    image: { uri: 'https://www.yarooms.com/hubfs/1-Sep-15-2023-02-45-09-1809-PM.png' },
+    points: 50,
+    category: 'Astuces',
+  },
+  {
+    title: 'Comment faire le bon choix pour son futur métier',
+    image: { uri: 'https://www.avocor.com/wp-content/uploads/2018/09/7-examples-of-teamwork-collaboration-in-the-workplace-featured-image.png' },
+    points: 50,
+    category: 'Exercices',
+  },
+  // Add more items as needed
+];
+
 const HeartScreen = ({ navigation, route }) => {
   const currentScreen = route.name;
   const [activeComponent, setActiveComponent] = useState('Component1');
@@ -14,15 +54,15 @@ const HeartScreen = ({ navigation, route }) => {
   const renderActiveComponent = () => {
     switch (activeComponent) {
       case 'Component1':
-        return <PourVous />;
+        return <PourVous data={data} />;
       case 'Component2':
-        return <Articles />;
+        return <Articles data={data.filter(item => item.category === 'Article')} />;
       case 'Component3':
-        return <Astuces />;
+        return <Astuces data={data.filter(item => item.category === 'Astuces')} />;
       case 'Component4':
-        return <Exercices />;
+        return <Exercices data={data.filter(item => item.category === 'Exercices')} />;
       default:
-        return <PourVous />;
+        return <PourVous data={data} />;
     }
   };
 
