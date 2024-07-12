@@ -10,6 +10,7 @@ const ScreenA = ({ navigation }) => {
         style={styles.image} 
         resizeMode="contain" 
       />
+      {console.log('object')}
       <Text style={styles.welcomeText}>Bienvenue</Text>
       <Text style={styles.instructionText}>Avant de commencer, veuillez identifier votre profil</Text>
       <TouchableOpacity style={styles.button}  onPress={() => navigation.navigate('ScreenB')} >

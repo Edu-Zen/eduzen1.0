@@ -21,7 +21,7 @@ const Stack = createNativeStackNavigator();
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="HomeScreen">
+      <Stack.Navigator initialRouteName="ScreenA">
         <Stack.Screen
           options={{ headerShown: false }}
           name="Home"
@@ -92,7 +92,12 @@ export default function App() {
 <Stack.Screen options={{
             headerShown: false 
           }} name="PremiumScreen" component={PremiumScreen} />
-
+<Stack.Screen options={{
+            headerShown: false 
+          }} name="Detail" component={Detail} />
+          <Stack.Screen options={{
+            headerShown: false 
+          }} name="CardDetails" component={CardDetails} />
 
 
 
