@@ -15,6 +15,7 @@ import HeartScreen from "./screens/HeartScreen";
 import ScreenLogin from "./screens/ScreenLogin";
 import PremiumScreen from "./screens/PremiumScreen";
 import Detail from "./screens/AddFormu";
+import CardDetails from './screens/CardDetails';
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -85,27 +86,16 @@ export default function App() {
           component={HeartScreen}
         />
 
-        <Stack.Screen
-          options={{
-            headerShown: false,
-          }}
-          name="ScreenLogin"
-          component={ScreenLogin}
-        />
-        <Stack.Screen
-          options={{
-            headerShown: false,
-          }}
-          name="PremiumScreen"
-          component={PremiumScreen}
-        />
-        <Stack.Screen
-          options={{
-            headerShown: false,
-          }}
-          name="Detail"
-          component={Detail}
-        />
+<Stack.Screen options={{
+            headerShown: false 
+          }} name="ScreenLogin" component={ScreenLogin} />
+<Stack.Screen options={{
+            headerShown: false 
+          }} name="PremiumScreen" component={PremiumScreen} />
+
+
+
+
       </Stack.Navigator>
     </NavigationContainer>
   );

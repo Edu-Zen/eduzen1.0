@@ -1,11 +1,37 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, StatusBar, ScrollView, TouchableOpacity, Image, Dimensions } from "react-native";
 import BottomNavBar from "../components/BottomNavBar";
 import { MaterialIcons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
+import axios from 'axios';
+import { API_URL } from '@env';
 
 const HomeScreen = ({ navigation, route }) => {
   const currentScreen = route.name;
-  
+  const email = route.params?.email;
+  const [user, setUser] = useState(null);
+  const [initials, setInitials] = useState('');
+
+  useEffect(() => {
+    if (!email) {
+      console.error('Email is undefined');
+      return;
+    }
+
+    const fetchUser = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/api/students/email/${email}`);
+        setUser(response.data);
+        const firstName = response.data.firstName || '';
+        const lastName = response.data.lastName || '';
+        setInitials(`${firstName.charAt(0)}${lastName.charAt(0)}`);
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    };
+    fetchUser();
+  }, [email]);
+
   const articles = [
     {
       title: "Comment faire le bon choix pour son futur métier",
@@ -50,13 +76,20 @@ const HomeScreen = ({ navigation, route }) => {
           <Text style={styles.headerTitle}>Aujourd'hui</Text>
           <View style={styles.pointsContainer}>
             <Text style={styles.pointsText}>+ 1000</Text>
-            <View style={styles.idContainer}>
-              <Text style={styles.idText}>ID</Text>
-            </View>
+            {user ? (
+              <>
+                <View style={styles.idContainer}>
+                  <Text style={styles.idText}>{initials}</Text>
+                </View>
+                <Text style={styles.nameText}></Text>
+              </>
+            ) : (
+              <Text>Loading...</Text>
+            )}
           </View>
         </View>
         <View style={styles.content}>
-          <Text style={styles.greeting}>Bonjour, Ibtihel Driss</Text>
+          <Text style={styles.greeting}>Bonjour, {`${user?.firstName ?? ''} ${user?.lastName ?? ''}`}</Text>
           <View style={styles.timeSlots}>
             {Array.from({ length: 10 }, (_, index) => (
               <Text key={index} style={styles.timeSlot}>{`${8 + index}:00`}</Text>
@@ -112,35 +145,26 @@ const HomeScreen = ({ navigation, route }) => {
             ))}
           </ScrollView>
         </View>
-
-        {/* New Views */}
-        <View style={styles.cardContainer}>
-          <Image source={require('../assets/home/EduZen Zed 01.png')} style={styles.cardImage} />
-          <View style={styles.cardContent}>
-            <Text style={styles.cardTitle}>Demander à Zed</Text>
-            <Text style={styles.cardText}>
-              Permettez à Zed de mieux vous connaître afin qu'il puisse vous soutenir tout au long de votre expérience avec nous.
-            </Text>
-            <TouchableOpacity style={styles.cardButton}>
-              <Text style={styles.cardButtonText}>Discuter avec Zed</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        <View style={styles.rewardsContainer}>
-          <Text style={styles.rewardsTitle}>Échanger vos points</Text>
-          <ScrollView horizontal={true} contentContainerStyle={styles.rewards}>
-            {rewards.map((reward, index) => (
-              <View key={index} style={styles.rewardCard}>
-                <Text style={styles.rewardPoints}>+ {reward.points}</Text>
-                <Text style={styles.rewardTitle}>{reward.title}</Text>
-                <Text style={styles.rewardPartner}>Partenaire : {reward.partenaire}</Text>
-              </View>
-            ))}
-          </ScrollView>
+        <View>
+          <LinearGradient
+            colors={['#3A98F5', '#00E9B8']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.cardContainerGradient}
+          >
+            <Image source={require('../assets/home/EduZen Zed 01.png')} style={styles.cardImage} />
+            <View style={styles.cardContent}>
+              <Text style={styles.cardTitle}>Demander à Zed</Text>
+              <Text style={styles.cardText}>
+                Permettez à Zed de mieux vous connaître afin qu'il puisse vous soutenir tout au long de votre expérience avec nous.
+              </Text>
+              <TouchableOpacity style={styles.cardButton}>
+                <Text style={styles.cardButtonText}>Discuter avec Zed</Text>
+              </TouchableOpacity>
+            </View>
+          </LinearGradient>
         </View>
       </ScrollView>
-     
       <View style={styles.bottomNav}>
         <BottomNavBar navigation={navigation} currentScreen={currentScreen} />
       </View>
@@ -368,19 +392,21 @@ const styles = StyleSheet.create({
     bottom: 0,
     width: '100%',
   },
-  cardContainer: {
-    flexDirection: 'row',
-    backgroundColor: '#E0F7FA',
-    padding: 20,
-    borderRadius: 10,
-    marginBottom: 20,
-    justifyContent: 'space-between',
+  // cardContainer: {
+  //   flexDirection: 'row',
+  //   backgroundColor: '#E0F7FA',
+  //   padding: 20,
+  //   borderRadius: 10,
+  //   marginBottom: 20,
+  //   justifyContent: 'space-between',
     
-  },
+  // },
   cardImage: {
-    width: width * 0.2,
-    height: height * 0.1,
+    top: 18 ,
+    width: width * 0.19,
+    height: height * 0.12,
     marginRight: 30,
+    
    
     
   },
@@ -398,7 +424,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
    cardButton: {
-    backgroundColor: '#6200EA',
+    backgroundColor: 'white',
     paddingVertical: 10,
     paddingHorizontal: 15,
     borderRadius: 5,
@@ -406,8 +432,15 @@ const styles = StyleSheet.create({
     width: width * 0.5,
   
   },
+  cardContainerGradient: {
+    flexDirection: 'row',
+    padding: 20,
+    borderRadius: 10,
+    justifyContent: 'space-between',
+    marginBottom: 70
+  },
   cardButtonText: {
-    color: '#FFFFFF',
+    color: 'blue',
     fontSize: 14,
     
   },

@@ -26,7 +26,7 @@ const ScreenD = ({ navigation, route }) => {
                 genre,
             });
             Alert.alert('Success', 'Profile updated successfully');
-            navigation.navigate('ScreenE');
+            navigation.navigate('ScreenE', {email});
         } catch (error) {
             if (error.response) {
                 console.log(error);
