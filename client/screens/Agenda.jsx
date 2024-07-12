@@ -1,129 +1,187 @@
-import React, { useState, useRef } from "react";
+import React, { useEffect, useState, useCallback } from 'react';
 import {
   View,
-  StyleSheet,
-  TouchableOpacity,
   Text,
-  Animated,
-  Easing,
-  Image,
-  TouchableWithoutFeedback,
-} from "react-native";
-import { Calendar } from "react-native-calendars";
-import { useNavigation } from "@react-navigation/native";
-import BottomNavBar from "../components/BottomNavBar"; // Ensure you have this component in your project
-import Sidebar from "../components/Sidebar"; // Import the Sidebar component
-import UpperNavBar from "../components/UpperNavBar";
-// Replace this with your actual image URL or local asset path
-const menuIcon = require("../assets/dd.png");
+  StyleSheet,
+  Alert,
+  Modal,
+  TouchableOpacity,
+  FlatList,
+} from 'react-native';
+import { CalendarList } from 'react-native-calendars';
+import {
+  fetchItems as fetchItemsApi,
+  fetchHolidays as fetchHolidaysApi,
+} from '../helpers/helperfnAgenda';
+import {
+  filterItemsByCurrentMonth,
+  formatItems,
+  formatHolidays,
+} from '../helpers/helperfnAgenda';
 
-const Agenda = ({ navigation, route }) => {
-  const currentScreen = route.name; // Assuming you use react-navigation
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const sidebarWidth = 250;
-  const sidebarAnimation = useRef(new Animated.Value(0)).current;
+const CalendarScreen = () => {
+  const [items, setItems] = useState({});
+  const [selectedDate, setSelectedDate] = useState('');
+  const [modalVisible, setModalVisible] = useState(false);
+  const [holidays, setHolidays] = useState([]);
 
-  const toggleSidebar = () => {
-    const toValue = isSidebarOpen ? 0 : 1;
-    Animated.timing(sidebarAnimation, {
-      toValue,
-      duration: 300,
-      easing: Easing.ease,
-      useNativeDriver: false,
-    }).start();
-    setIsSidebarOpen(!isSidebarOpen);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const itemsData = await fetchItemsApi();
+        const filteredItems = filterItemsByCurrentMonth(itemsData);
+        const formattedItems = formatItems(filteredItems);
+        setItems(formattedItems);
+      } catch (error) {
+        console.error(error);
+        Alert.alert('Error', 'Failed to fetch items');
+      }
+
+      try {
+        const holidaysData = await fetchHolidaysApi();
+        const formattedHolidays = formatHolidays(holidaysData);
+        setHolidays(formattedHolidays);
+      } catch (error) {
+        console.error(error);
+        Alert.alert('Error', 'Failed to fetch holidays');
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const onDayPress = (day) => {
+    setSelectedDate(day.dateString);
+    setModalVisible(true);
   };
 
-  const closeSidebar = () => {
-    Animated.timing(sidebarAnimation, {
-      toValue: 0,
-      duration: 300,
-      easing: Easing.ease,
-      useNativeDriver: false,
-    }).start(() => {
-      setIsSidebarOpen(false);
-    });
+  const customMarking = useCallback((date) => {
+    let marked = false;
+    let customStyles = {};
+
+    if (items[date]) {
+      marked = true;
+      customStyles = {
+        customContainerStyle: {
+          backgroundColor: 'blue',
+        },
+      };
+    }
+
+    return { marked, ...customStyles };
+  }, [items]);
+
+  const markedDates = {
+    ...Object.keys(items).reduce((acc, date) => {
+      acc[date] = { marked: true, ...customMarking(date) };
+      return acc;
+    }, {}),
+    ...Object.keys(holidays).reduce((acc, date) => {
+      acc[date] = { marked: true, dotColor: 'red' };
+      return acc;
+    }, {}),
   };
 
-  const translateX = sidebarAnimation.interpolate({
-    inputRange: [0, 1],
-    outputRange: [-sidebarWidth, 0],
-  });
+  const renderEvent = ({ item }) => (
+    <View style={styles.item}>
+      <Text style={styles.itemText}>{item.name}</Text>
+      <Text style={styles.itemText}>{item.email}</Text>
+      <Text style={styles.itemText}>{item.time}</Text>
+      <Text style={styles.itemText}>{item.type}</Text>
+    </View>
+  );
 
   return (
-   
-    <TouchableWithoutFeedback onPress={closeSidebar}>
-      
-      <View style={styles.container}>
-     
-        {!isSidebarOpen && ( // Render menu icon only if sidebar is not open
-          <TouchableOpacity
-            style={styles.menuIconContainer}
-            onPress={toggleSidebar}
-          >
-            <Image source={menuIcon} style={styles.menuIcon} />
-          </TouchableOpacity>
-        )}
-        <Animated.View
-          style={[styles.sidebarContainer, { transform: [{ translateX }] }]}
+    <View style={styles.container}>
+      <CalendarList
+        markedDates={markedDates}
+        onDayPress={onDayPress}
+        calendarStyle={styles.calendar}
+        markingType={'custom'}
+      />
+      {selectedDate && (
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => setModalVisible(false)}
         >
-          <Sidebar />
-        </Animated.View>
-        <View style={styles.mainContent}>
-        
-          <View style={styles.calendarContainer}>
-         
-            <Calendar
-            // Calendar props as before
-            // ...
-            />
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalTitle}>Events for {selectedDate}:</Text>
+              <FlatList
+                data={items[selectedDate]?.concat(holidays[selectedDate] || [])}
+                renderItem={renderEvent}
+                keyExtractor={(item, index) => index.toString()}
+                numColumns={2} // Adjust the number of columns as needed
+                contentContainerStyle={styles.grid}
+              />
+              <TouchableOpacity
+                style={styles.closeButton}
+                onPress={() => setModalVisible(false)}
+              >
+                <Text style={styles.closeButtonText}>Close</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-          <BottomNavBar navigation={navigation} currentScreen={currentScreen} />
-        </View>
-      </View>
-    </TouchableWithoutFeedback>
+        </Modal>
+      )}
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: "row",
-    backgroundColor: "#FFFFFF",
+    backgroundColor: '#fff',
   },
-  sidebarContainer: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    bottom: 0,
-    width: 250,
-    backgroundColor: "#f2f2f2",
-    paddingVertical: 20,
-    zIndex: 10,
-  },
-  menuIconContainer: {
-    position: "absolute",
-    top: 20,
-    left: 0,
+  item: {
+    backgroundColor: '#fff',
+    borderRadius: 5,
     padding: 10,
-    zIndex: 20,
-  },
-  menuIcon: {
-    width: 30,
-    height: 30,
-    resizeMode: "contain", // Ensure the icon fits well in the container
-  },
-  mainContent: {
+    margin: 5,
     flex: 1,
-    marginLeft: 0, // Adjust margin left to account for sidebar width
-    justifyContent: "space-between",
-    // marginTop:20
+    borderWidth: 1,
+    borderColor: '#ccc',
   },
-  calendarContainer: {
+  itemText: {
+    fontSize: 14,
+    textAlign: 'center',
+  },
+  modalOverlay: {
     flex: 1,
-    paddingTop: 20,
-    paddingHorizontal: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    width: '80%',
+    backgroundColor: '#fff',
+    padding: 20,
+    borderRadius: 10,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  closeButton: {
+    marginTop: 20,
+    backgroundColor: '#2196F3',
+    padding: 10,
+    borderRadius: 5,
+  },
+  closeButtonText: {
+    color: '#fff',
+    textAlign: 'center',
+  },
+  calendar: {
+    marginBottom: 10,
+  },
+  grid: {
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 
-export default Agenda;
+export default CalendarScreen;

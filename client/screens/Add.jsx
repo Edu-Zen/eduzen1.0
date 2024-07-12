@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet, Image, ScrollView, FlatList, Dimensions } from "react-native";
+import { View, Text, StyleSheet, Image, ScrollView, FlatList, Dimensions,TouchableOpacity } from "react-native";
 import { LinearGradient } from 'expo-linear-gradient';
 import BottomNavBar from "../components/BottomNavBar";
 import UpperNavBar from "../components/UpperNavBar";
@@ -97,21 +97,29 @@ const sections = [
     ],
   },
 ];
-
 const Add = ({ navigation, route }) => {
   const currentScreen = route.name;
 
+  const handlePress = (sectionTitle, item) => {
+    navigation.navigate('Detail', { section: sectionTitle, item });
+  };
+
   return (
     <View style={styles.container}>
-      
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
-      <UpperNavBar navigation={navigation} currentScreen={currentScreen} />
+        <UpperNavBar navigation={navigation} currentScreen={currentScreen} />
         {sections.map((section, index) => (
           <View key={index} style={styles.section}>
             <Text style={styles.sectionTitle}>{section.title}</Text>
             <FlatList
               data={section.data}
-              renderItem={({ item }) => <ImageTextCard image={images[item.image]} text={item.text} />}
+              renderItem={({ item }) => (
+                <ImageTextCard 
+                  image={images[item.image]} 
+                  text={item.text}
+                  onPress={() => handlePress(section.title, item)} 
+                />
+              )}
               keyExtractor={(item, idx) => idx.toString()}
               numColumns={2}
               columnWrapperStyle={styles.columnWrapper}
@@ -125,8 +133,8 @@ const Add = ({ navigation, route }) => {
   );
 };
 
-const ImageTextCard = ({ image, text }) => (
-  <View style={styles.card}>
+const ImageTextCard = ({ image, text, onPress }) => (
+  <TouchableOpacity style={styles.card} onPress={onPress}>
     <LinearGradient
       colors={['#3A98F5', '#00E9B8']}
       start={{ x: 0, y: 0 }}
@@ -137,8 +145,9 @@ const ImageTextCard = ({ image, text }) => (
     </LinearGradient>
     <Text style={styles.imageText}>{text}</Text>
     <Text style={styles.imageSubText}>Lorem Ipsum is simply</Text>
-  </View>
+  </TouchableOpacity>
 );
+
 
 const styles = StyleSheet.create({
   container: {

@@ -4,6 +4,7 @@ const app = express();
 const db = require("./config/db");
 const auth = require("./routes/auth");
 const students = require("./routes/students");
+const alls=require("./routes/alls");
 const cors = require('cors');
 const bodyParser = require('body-parser');
 
@@ -17,6 +18,6 @@ app.use(bodyParser.json());
 // Routes
 app.use("/api/auth", auth);
 app.use("/api/students", students);
-
+app.use("/api/alls", alls);
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
