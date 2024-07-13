@@ -37,7 +37,20 @@ const express = require('express');
         res.status(500).json({ error: error.message });
       }
     });
+    router.get('/getByEmail/:email', async (req, res) => {
+      try {
+        const items = await All.find({ email: req.params.email });
+        if (items && items.length > 0) {
+          res.status(200).json(items);
+        } else {
+          res.status(404).json({ error: 'Items not found' });
+        }
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
+    });
     
+     
     // UPDATE
     router.put('/update/:id', async (req, res) => {
       try {

@@ -49,6 +49,8 @@ const data = [
 
 const HeartScreen = ({ navigation, route }) => {
   const currentScreen = route.name;
+  const email=route.params.email;
+
   const [activeComponent, setActiveComponent] = useState('Component1');
 
   const renderActiveComponent = () => {
@@ -98,7 +100,7 @@ const HeartScreen = ({ navigation, route }) => {
       <View style={styles.content}>
         {renderActiveComponent()}
       </View>
-      <BottomNavBar navigation={navigation} currentScreen={currentScreen} />
+      <BottomNavBar navigation={navigation} currentScreen={currentScreen} email={email} />
     </View>
   );
 };
