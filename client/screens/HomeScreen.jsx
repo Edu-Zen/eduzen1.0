@@ -78,9 +78,12 @@ const HomeScreen = ({ navigation, route }) => {
             <Text style={styles.pointsText}>+ 1000</Text>
             {user ? (
               <>
-                <View style={styles.idContainer}>
+                <TouchableOpacity
+                  style={styles.idContainer}
+                  onPress={() => navigation.navigate('MyProfile' , {email})}
+                >
                   <Text style={styles.idText}>{initials}</Text>
-                </View>
+                  </TouchableOpacity>
                 <Text style={styles.nameText}></Text>
               </>
             ) : (

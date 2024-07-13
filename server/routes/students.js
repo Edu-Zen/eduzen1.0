@@ -1,9 +1,14 @@
 const router = require("express").Router();
 const { Student, validate } = require("../models/student");
 // const Token = require("../models/token");
+
 const bcrypt = require("bcrypt");
 const sendEmail = require("../utils/sendEmail");
 
+const cloudinary = require('cloudinary').v2;
+// const multer = require('multer');
+// const { CloudinaryStorage } = require('multer-storage-cloudinary');
+require('dotenv').config();
 // Function to generate a 6-digit verification code
 function generateVerificationCode() {
   return Math.floor(100000 + Math.random() * 900000).toString();
@@ -196,6 +201,59 @@ router.get('/email/:email', async (req, res) => {
     res.status(500).send('Server error');
   }
 });
+
+
+
+router.put('/update/:email', async (req, res) => {
+  const { email } = req.params;
+  const updateData = req.body;
+
+  try {
+    const updatedStudent = await Student.findOneAndUpdate({ email }, updateData, { new: true });
+    if (!updatedStudent) {
+      return res.status(404).json({ message: 'Student not found' });
+    }
+    res.json(updatedStudent);
+  } catch (error) {
+    res.status(500).json({ message: 'Error updating student', error });
+  }
+});
+
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
+
+
+
+router.patch('/:id/profile-picture', async (req, res) => {
+  try {
+    const student = await Student.findById(req.params.id);
+    if (!student) {
+      return res.status(404).send('Student not found');
+    }
+
+    const result = await cloudinary.uploader.upload(req.body.profilePicture, {
+      folder: 'profile-pictures',
+      transformation: [{ width: 200, height: 200, crop: 'limit' }]
+    });
+
+    student.profilePicture = result.secure_url;
+    await student.save();
+
+    res.json(student);
+  } catch (error) {
+    console.error('Error handling request:', error);
+    res.status(500).send('Server error');
+  }
+});
+
+
+
+
 module.exports = router;
 
 // const express = require('express');
