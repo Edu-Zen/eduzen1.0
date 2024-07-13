@@ -5,12 +5,12 @@ import axios from 'axios';
 import { API_URL } from '@env';
 
 const Detail = ({ route, navigation }) => {
-  const { section, item } = route.params;
+  const { section, item, email } = route.params;
   const [date, setDate] = useState(new Date());
   const [time, setTime] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
-  const [email, setEmail] = useState('');
+
   const [name, setName] = useState('');
 
   const handleDateChange = (event, selectedDate) => {
@@ -27,13 +27,12 @@ const Detail = ({ route, navigation }) => {
 
   const handleSubmit = async () => {
     try {
-      
       const response = await axios.post(`${API_URL}/api/alls/create`, {
         email,
         dateOf: date,
         nameOf: name,
         timeOf: time,
-        categorieOf: section ,
+        categorieOf: section,
         typeOf: item.text,
       });
 
@@ -52,12 +51,7 @@ const Detail = ({ route, navigation }) => {
     <View style={styles.container}>
       <Text style={styles.title}>Section: {section}</Text>
       <Text style={styles.title}>Item: {item.text}</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Enter email"
-        value={email}
-        onChangeText={setEmail}
-      />
+  
       <TextInput
         style={styles.input}
         placeholder="Enter name"
@@ -98,22 +92,31 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: "#fff",
+    backgroundColor: "#f5f5f5", // Light grey background
   },
   title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
+    fontSize: 20,
+    fontWeight: "600",
+    marginBottom: 15,
+    color: "#333", // Dark grey text color
   },
   input: {
     borderWidth: 1,
-    borderColor: "#ccc",
+    borderColor: "#ddd",
     padding: 10,
     marginBottom: 20,
-    borderRadius: 5,
+    borderRadius: 8,
+    backgroundColor: "#fff",
   },
   pickerContainer: {
     marginBottom: 20,
+  },
+  button: {
+    backgroundColor: "#007BFF", // Blue button
+    color: "#fff",
+    padding: 10,
+    borderRadius: 8,
+    textAlign: "center",
   },
 });
 

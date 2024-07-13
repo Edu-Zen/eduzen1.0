@@ -30,6 +30,7 @@ const toolsData = [
 
 const PremiumScreen = ({navigation,route}) => {
   const currentScreen = route.name;
+  const email=route.params.email;
 
   return (
     <View style={styles.container}>
@@ -90,7 +91,7 @@ const PremiumScreen = ({navigation,route}) => {
         />
       </View>
     </ScrollView>
-    <BottomNavBar navigation={navigation} currentScreen={currentScreen} />
+    <BottomNavBar navigation={navigation} currentScreen={currentScreen} email={email}/>
 
     </View>
   );

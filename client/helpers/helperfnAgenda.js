@@ -43,8 +43,9 @@ export const formatHolidays = (holidaysData) => {
 import axios from 'axios';
 import { API_URL, CALENDARIFIC_API_KEY, CALENDARIFIC_COUNTRY, CALENDARIFIC_YEAR } from '@env';
 
-export const fetchItems = async () => {
-  const response = await axios.get(`${API_URL}/api/alls/get`);
+export const fetchItems = async (email) => {
+  console.log(email)
+  const response = await axios.get(`${API_URL}/api/alls/getByEmail/${email}`);
   return response.data;
 };
 

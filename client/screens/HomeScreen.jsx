@@ -1,52 +1,71 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, StatusBar, ScrollView, TouchableOpacity, Image, Dimensions } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  StatusBar,
+  ScrollView,
+  TouchableOpacity,
+  Image,
+  Dimensions,
+} from "react-native";
 import BottomNavBar from "../components/BottomNavBar";
-import { MaterialIcons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
-import axios from 'axios';
-import { API_URL } from '@env';
+import { MaterialIcons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
+import axios from "axios";
+import { API_URL } from "@env";
 
 const HomeScreen = ({ navigation, route }) => {
   const currentScreen = route.name;
   const email = route.params?.email;
   const [user, setUser] = useState(null);
-  const [initials, setInitials] = useState('');
+  const [initials, setInitials] = useState("");
 
   useEffect(() => {
     if (!email) {
-      console.error('Email is undefined');
+      console.error("Email is undefined");
       return;
     }
 
     const fetchUser = async () => {
       try {
-        const response = await axios.get(`${API_URL}/api/students/email/${email}`);
+        console.log(email);
+        const response = await axios.get(
+          `${API_URL}/api/students/email/${email}`
+        );
         setUser(response.data);
-        const firstName = response.data.firstName || '';
-        const lastName = response.data.lastName || '';
+        const firstName = response.data.firstName || "";
+        const lastName = response.data.lastName || "";
         setInitials(`${firstName.charAt(0)}${lastName.charAt(0)}`);
       } catch (error) {
-        console.error('Error fetching user data:', error);
+        console.error("Error fetching user data:", error);
       }
     };
+
     fetchUser();
   }, [email]);
 
   const articles = [
     {
       title: "Comment faire le bon choix pour son futur métier",
-      image: { uri: "https://www.sciforma.com/wp-content/uploads/2022/03/Screen-Shot-2022-06-01-at-4.28.51-PM-1024x578.png" },
-      points: 50
+      image: {
+        uri: "https://www.sciforma.com/wp-content/uploads/2022/03/Screen-Shot-2022-06-01-at-4.28.51-PM-1024x578.png",
+      },
+      points: 50,
     },
     {
       title: "Conseils pour un mode de vie sain",
-      image: { uri: "https://www.yarooms.com/hubfs/1-Sep-15-2023-02-45-09-1809-PM.png" },
-      points: 50
+      image: {
+        uri: "https://www.yarooms.com/hubfs/1-Sep-15-2023-02-45-09-1809-PM.png",
+      },
+      points: 50,
     },
     {
       title: "Bien-être mental: Techniques et astuces",
-      image: { uri: "https://www.avocor.com/wp-content/uploads/2018/09/7-examples-of-teamwork-collaboration-in-the-workplace-featured-image.png" },
-      points: 50
+      image: {
+        uri: "https://www.avocor.com/wp-content/uploads/2018/09/7-examples-of-teamwork-collaboration-in-the-workplace-featured-image.png",
+      },
+      points: 50,
     },
   ];
 
@@ -54,17 +73,17 @@ const HomeScreen = ({ navigation, route }) => {
     {
       points: 50000,
       title: "Carte de recharge 5Dt",
-      partenaire: "ooredoo"
+      partenaire: "ooredoo",
     },
     {
       points: 40000,
       title: "Abonnement gym 1 mois",
-      partenaire: "fitness club"
+      partenaire: "fitness club",
     },
     {
       points: 40000,
       title: "Un bon d'achat de 30dt",
-      partenaire: "Existe"
+      partenaire: "Existe",
     },
   ];
 
@@ -92,10 +111,14 @@ const HomeScreen = ({ navigation, route }) => {
           </View>
         </View>
         <View style={styles.content}>
-          <Text style={styles.greeting}>Bonjour, {`${user?.firstName ?? ''} ${user?.lastName ?? ''}`}</Text>
+          <Text style={styles.greeting}>
+            Bonjour, {`${user?.firstName ?? ""} ${user?.lastName ?? ""}`}
+          </Text>
           <View style={styles.timeSlots}>
             {Array.from({ length: 10 }, (_, index) => (
-              <Text key={index} style={styles.timeSlot}>{`${8 + index}:00`}</Text>
+              <Text key={index} style={styles.timeSlot}>{`${
+                8 + index
+              }:00`}</Text>
             ))}
           </View>
           <View style={styles.row}>
@@ -111,30 +134,50 @@ const HomeScreen = ({ navigation, route }) => {
             <Text style={styles.nextTaskTime}>Prévu à 16 h</Text>
           </View>
           <Text style={styles.nextTaskActivity}>Activité sportif</Text>
-          <Text style={styles.nextTaskDescription}>Aller à la salle de Gym</Text>
+          <Text style={styles.nextTaskDescription}>
+            Aller à la salle de Gym
+          </Text>
         </View>
         <View style={styles.container1}>
           <View style={styles.objectives}>
-            <MaterialIcons name="chevron-left" size={24} color="white" style={styles.arrowIcon} />
+            <MaterialIcons
+              name="chevron-left"
+              size={24}
+              color="white"
+              style={styles.arrowIcon}
+            />
             <View style={styles.content1}>
               <Text style={styles.objectivesTitle}>Mes objectifs</Text>
               <Text style={styles.objectiveSubtitle}>Perdre du poids</Text>
-              <Text style={styles.objectivesDescription}>Dans 1 mois 2 semaines et 3 jours</Text>
+              <Text style={styles.objectivesDescription}>
+                Dans 1 mois 2 semaines et 3 jours
+              </Text>
             </View>
-            <MaterialIcons name="chevron-right" size={24} color="white" style={styles.arrowIcon} />
+            <MaterialIcons
+              name="chevron-right"
+              size={24}
+              color="white"
+              style={styles.arrowIcon}
+            />
           </View>
         </View>
         <View style={styles.schedule}>
-          <Image source={require('../assets/home/user.png')} style={styles.scheduleIcon} />
+          <Image
+            source={require("../assets/home/user.png")}
+            style={styles.scheduleIcon}
+          />
           <View>
             <Text style={styles.scheduleTitle}>Votre emploi du temps</Text>
-            <Text style={styles.scheduleDescription}>Quelle votre prochaine étape</Text>
+            <Text style={styles.scheduleDescription}>
+              Quelle votre prochaine étape
+            </Text>
           </View>
         </View>
         <View style={styles.wellbeing}>
           <Text style={styles.wellbeingTitle}>Pour votre bien-être</Text>
           <Text style={styles.wellbeingDescription}>
-            Gagnez des points ZEN pour chaque article lu afin de collecter un maximum et de les convertir en cadeaux auprès de nos partenaires.
+            Gagnez des points ZEN pour chaque article lu afin de collecter un
+            maximum et de les convertir en cadeaux auprès de nos partenaires.
           </Text>
           <ScrollView horizontal={true} contentContainerStyle={styles.articles}>
             {articles.map((article, index) => (
@@ -150,16 +193,20 @@ const HomeScreen = ({ navigation, route }) => {
         </View>
         <View>
           <LinearGradient
-            colors={['#3A98F5', '#00E9B8']}
+            colors={["#3A98F5", "#00E9B8"]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             style={styles.cardContainerGradient}
           >
-            <Image source={require('../assets/home/EduZen Zed 01.png')} style={styles.cardImage} />
+            <Image
+              source={require("../assets/home/EduZen Zed 01.png")}
+              style={styles.cardImage}
+            />
             <View style={styles.cardContent}>
               <Text style={styles.cardTitle}>Demander à Zed</Text>
               <Text style={styles.cardText}>
-                Permettez à Zed de mieux vous connaître afin qu'il puisse vous soutenir tout au long de votre expérience avec nous.
+                Permettez à Zed de mieux vous connaître afin qu'il puisse vous
+                soutenir tout au long de votre expérience avec nous.
               </Text>
               <TouchableOpacity style={styles.cardButton}>
                 <Text style={styles.cardButtonText}>Discuter avec Zed</Text>
@@ -169,12 +216,16 @@ const HomeScreen = ({ navigation, route }) => {
         </View>
       </ScrollView>
       <View style={styles.bottomNav}>
-        <BottomNavBar navigation={navigation} currentScreen={currentScreen} />
+        <BottomNavBar
+          navigation={navigation}
+          currentScreen={currentScreen}
+          email={email}
+        />
       </View>
     </View>
   );
 };
-const { width, height } = Dimensions.get('window');
+const { width, height } = Dimensions.get("window");
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -185,43 +236,43 @@ const styles = StyleSheet.create({
     marginBottom: 60, // Adjust based on BottomNavBar height
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 20,
   },
   headerTitle: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   pointsContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   pointsText: {
     fontSize: 18,
-    color: '#00C853',
+    color: "#00C853",
     marginRight: 10,
   },
   idContainer: {
-    backgroundColor: '#E0E0E0',
+    backgroundColor: "#E0E0E0",
     borderRadius: 20,
     paddingHorizontal: 10,
     paddingVertical: 5,
   },
   idText: {
     fontSize: 16,
-    color: '#757575',
+    color: "#757575",
   },
   content: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#FFFFFF",
     padding: 20,
     borderRadius: 10,
     marginBottom: 20,
   },
   greeting: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 20,
   },
   timeSlots: {
@@ -229,51 +280,51 @@ const styles = StyleSheet.create({
   },
   timeSlot: {
     fontSize: 16,
-    color: '#9E9E9E',
+    color: "#9E9E9E",
     marginBottom: 5,
   },
   row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    width: '100%',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "100%",
   },
   openButton: {
-    backgroundColor: '#6200EA',
+    backgroundColor: "#6200EA",
     borderRadius: 5,
     padding: 10,
-    alignItems: 'center',
+    alignItems: "center",
   },
   openButtonText: {
-    color: '#FFFFFF',
+    color: "#FFFFFF",
     fontSize: 16,
   },
   date: {
     fontSize: 16,
-    color: '#3F3A64',
-    textAlign: 'center',
+    color: "#3F3A64",
+    textAlign: "center",
   },
   nextTask: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     padding: 20,
     borderRadius: 10,
     marginBottom: 20,
   },
   taskHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   nextTaskTitle: {
     fontSize: 17,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   nextTaskTime: {
     fontSize: 14,
-    color: '#20AD96'
+    color: "#20AD96",
   },
   nextTaskActivity: {
     fontSize: 13,
-    color: 'grey',
+    color: "grey",
     marginTop: 10,
   },
   nextTaskDescription: {
@@ -282,43 +333,43 @@ const styles = StyleSheet.create({
   },
   container1: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   objectives: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#E8F5E9',
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#E8F5E9",
     padding: 10, // Reduced padding for smaller card
     borderRadius: 10,
     marginBottom: 20,
-    width: '100%', // Adjust width as needed
-    justifyContent: 'space-between', // Align arrows at the ends
+    width: "100%", // Adjust width as needed
+    justifyContent: "space-between", // Align arrows at the ends
   },
   content1: {
-    alignItems: 'center',
+    alignItems: "center",
   },
   objectivesTitle: {
     fontSize: 13,
-    color: '#20AD96',
+    color: "#20AD96",
     marginBottom: 5, // Reduced margin
   },
   objectiveSubtitle: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 5, // Reduced margin
   },
   objectivesDescription: {
     fontSize: 14,
-    color: '#20AD96',
+    color: "#20AD96",
   },
   arrowIcon: {},
   schedule: {
-    backgroundColor: '#E0F7FA',
+    backgroundColor: "#E0F7FA",
     padding: 20,
     borderRadius: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 20,
   },
   scheduleIcon: {
@@ -328,7 +379,7 @@ const styles = StyleSheet.create({
   },
   scheduleTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   scheduleDescription: {
     fontSize: 13,
@@ -340,16 +391,16 @@ const styles = StyleSheet.create({
   },
   wellbeingTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 10,
   },
   wellbeingDescription: {
     fontSize: 14,
     marginBottom: 20,
-    color: 'grey'
+    color: "grey",
   },
   articles: {
-    flexDirection: 'row',
+    flexDirection: "row",
     paddingHorizontal: 0, // Remove padding
   },
   article: {
@@ -357,43 +408,43 @@ const styles = StyleSheet.create({
     height: 200, // Adjust height as needed
     marginRight: 20,
     borderRadius: 10,
-    overflow: 'hidden',
-    position: 'relative',
+    overflow: "hidden",
+    position: "relative",
   },
   articleImage: {
-    width: '150%',
-    height: '100%',
+    width: "150%",
+    height: "100%",
   },
   articleOverlay: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: 'rgba(192,192,192,0.4)',
+    backgroundColor: "rgba(192,192,192,0.4)",
     padding: 5,
   },
   articlePoints: {
-    position: 'absolute',
+    position: "absolute",
     top: 10,
     right: 10,
-    backgroundColor: '#FFFFFF',
-    color: '#20AD96',
+    backgroundColor: "#FFFFFF",
+    color: "#20AD96",
     borderRadius: 5,
     paddingHorizontal: 5,
     paddingVertical: 2,
     fontSize: 12,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   articleTitle: {
     fontSize: 14,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
-    textAlign: 'center',
+    fontWeight: "bold",
+    color: "#FFFFFF",
+    textAlign: "center",
   },
   bottomNav: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 0,
-    width: '100%',
+    width: "100%",
   },
   // cardContainer: {
   //   flexDirection: 'row',
@@ -402,16 +453,13 @@ const styles = StyleSheet.create({
   //   borderRadius: 10,
   //   marginBottom: 20,
   //   justifyContent: 'space-between',
-    
+
   // },
   cardImage: {
-    top: 18 ,
+    top: 18,
     width: width * 0.19,
     height: height * 0.12,
     marginRight: 30,
-    
-   
-    
   },
   cardContent: {
     flex: 1,
@@ -423,29 +471,27 @@ const styles = StyleSheet.create({
   },
   cardText: {
     fontSize: 14,
-    color: '#3F3A64',
+    color: "#3F3A64",
     marginBottom: 20,
   },
-   cardButton: {
-    backgroundColor: 'white',
+  cardButton: {
+    backgroundColor: "white",
     paddingVertical: 10,
     paddingHorizontal: 15,
     borderRadius: 5,
     // alignSelf:"stretch",
     width: width * 0.5,
-  
   },
   cardContainerGradient: {
-    flexDirection: 'row',
+    flexDirection: "row",
     padding: 20,
     borderRadius: 10,
-    justifyContent: 'space-between',
-    marginBottom: 70
+    justifyContent: "space-between",
+    marginBottom: 70,
   },
   cardButtonText: {
-    color: 'blue',
+    color: "blue",
     fontSize: 14,
-    
   },
   rewardsContainer: {
     padding: 20,
@@ -454,35 +500,34 @@ const styles = StyleSheet.create({
   },
   rewardsTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 10,
   },
   rewards: {
-    flexDirection: 'row',
-
+    flexDirection: "row",
   },
   rewardCard: {
     width: width * 0.7,
-    backgroundColor: '#F5F1ED',
+    backgroundColor: "#F5F1ED",
     padding: 20,
     borderRadius: 10,
     marginRight: 20,
   },
   rewardPoints: {
     fontSize: 16,
-    fontWeight: 'bold',
-    color: '#20AD96',
+    fontWeight: "bold",
+    color: "#20AD96",
     marginBottom: 5,
   },
   rewardTitle: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 5,
-    color:'#3F3A64'
+    color: "#3F3A64",
   },
   rewardPartner: {
     fontSize: 14,
-    color: '#757575',
+    color: "#757575",
   },
 });
 
