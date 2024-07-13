@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, Alert, Platform, Keyboard, ScrollView,Dimensions } from 'react-native'; // Import Keyboard module
+import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, Alert, Platform, Keyboard, ScrollView,Dimensions } from 'react-native'; 
 import axios from 'axios';
 import exampleImage from '../assets/splash.png';
 import { API_URL } from '@env';

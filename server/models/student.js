@@ -11,7 +11,15 @@ const studentSchema = new mongoose.Schema({
   verified: { type: Boolean, default: false },
   genre: { type: String, enum: ['Male', 'Female', 'Other'] },
   birthDate: { type: Date },
-  verificationCode: { type: Number }
+  verificationCode: { type: Number } ,
+  phone: { type: String, required: false },
+  street: { type: String, required: false },
+  city: { type: String, required: false },
+  postalCode: { type: String, required: false },
+  country: { type: String, required: false },
+  educationLevel: { type: String, required: false },
+  school: { type: String, required: false } ,
+  profilePicture: { type: String, required: false }
 });
 
 studentSchema.methods.generateAuthToken = function () {

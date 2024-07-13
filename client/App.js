@@ -16,6 +16,10 @@ import ScreenLogin from "./screens/ScreenLogin";
 import PremiumScreen from "./screens/PremiumScreen";
 import Detail from "./screens/AddFormu";
 import CardDetails from './screens/CardDetails';
+import MyProfile from "./screens/MyProfile";
+import EditProfile from "./screens/EditProfile";
+
+
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -98,6 +102,9 @@ export default function App() {
           <Stack.Screen options={{
             headerShown: false 
           }} name="CardDetails" component={CardDetails} />
+
+<Stack.Screen name="MyProfile" component={MyProfile} options={{ headerShown: false }} />
+<Stack.Screen name="EditProfile" component={EditProfile} options={{ headerShown: false }} />
 
 
 
