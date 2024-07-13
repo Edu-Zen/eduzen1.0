@@ -1,10 +1,19 @@
 import React from "react";
-import { View, Text, StyleSheet, Image, ScrollView, FlatList, Dimensions,TouchableOpacity } from "react-native";
-import { LinearGradient } from 'expo-linear-gradient';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  ScrollView,
+  FlatList,
+  Dimensions,
+  TouchableOpacity,
+} from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 import BottomNavBar from "../components/BottomNavBar";
 import UpperNavBar from "../components/UpperNavBar";
 
-const { width, height } = Dimensions.get('window');
+const { width, height } = Dimensions.get("window");
 
 import universite from "../assets/université.png";
 import extra from "../assets/extra.png";
@@ -98,10 +107,11 @@ const sections = [
   },
 ];
 const Add = ({ navigation, route }) => {
+  const email=route.params?.email;
   const currentScreen = route.name;
 
   const handlePress = (sectionTitle, item) => {
-    navigation.navigate('Detail', { section: sectionTitle, item });
+    navigation.navigate("Detail", { section: sectionTitle, item ,email});
   };
 
   return (
@@ -114,10 +124,10 @@ const Add = ({ navigation, route }) => {
             <FlatList
               data={section.data}
               renderItem={({ item }) => (
-                <ImageTextCard 
-                  image={images[item.image]} 
+                <ImageTextCard
+                  image={images[item.image]}
                   text={item.text}
-                  onPress={() => handlePress(section.title, item)} 
+                  onPress={() => handlePress(section.title, item)}
                 />
               )}
               keyExtractor={(item, idx) => idx.toString()}
@@ -128,7 +138,7 @@ const Add = ({ navigation, route }) => {
           </View>
         ))}
       </ScrollView>
-      <BottomNavBar navigation={navigation} currentScreen={currentScreen} />
+      <BottomNavBar navigation={navigation} currentScreen={currentScreen} email={email} />
     </View>
   );
 };
@@ -136,7 +146,7 @@ const Add = ({ navigation, route }) => {
 const ImageTextCard = ({ image, text, onPress }) => (
   <TouchableOpacity style={styles.card} onPress={onPress}>
     <LinearGradient
-      colors={['#3A98F5', '#00E9B8']}
+      colors={["#3A98F5", "#00E9B8"]}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
       style={styles.gradient}
@@ -147,7 +157,6 @@ const ImageTextCard = ({ image, text, onPress }) => (
     <Text style={styles.imageSubText}>Lorem Ipsum is simply</Text>
   </TouchableOpacity>
 );
-
 
 const styles = StyleSheet.create({
   container: {

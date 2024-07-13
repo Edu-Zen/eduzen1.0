@@ -5,13 +5,15 @@ import homeIcon from '../assets/home/Home.png';
 import agendaIcon from '../assets/home/agenda.png';
 import addIcon from '../assets/home/add.png';
 import heartIcon from '../assets/home/heart.png';
-import diamondIcon from '../assets/home/diamond.png'; // Corrected spelling
+import diamondIcon from '../assets/home/diamond.png';
 
 const { width, height } = Dimensions.get('window');
-const iconSize = width * 0.07; // Adjust size relative to screen width
-const tabHeight = height * 0.08; // Adjust height relative to screen height
+const iconSize = width * 0.07;
+const tabHeight = height * 0.08;
 
-const BottomNavBar = ({ navigation, currentScreen }) => {
+const BottomNavBar = ({ navigation, currentScreen, email }) => {
+    ; // Assuming email is passed as a parameter to the BottomNavBar
+console.log(email,'in bottomnav')
     const routes = [
         { name: 'Home', icon: homeIcon, route: 'Home' },
         { name: 'Agenda', icon: agendaIcon, route: 'Agenda' },
@@ -21,7 +23,7 @@ const BottomNavBar = ({ navigation, currentScreen }) => {
     ];
 
     const navigateToScreen = (routeName) => {
-        navigation.navigate(routeName);
+        navigation.navigate(routeName, { email });
     };
 
     return (
@@ -84,8 +86,8 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         justifyContent: 'center',
         alignItems: 'center',
-        width: iconSize * 2, // Increase size for active tab
-        height: iconSize * 2, // Increase size for active tab
+        width: iconSize * 2,
+        height: iconSize * 2,
     },
     icon: {
         width: iconSize,
@@ -93,7 +95,7 @@ const styles = StyleSheet.create({
         resizeMode: 'contain',
     },
     activeIcon: {
-        tintColor: '#FFFFFF', // Adjust icon color for active tab
+        tintColor: '#FFFFFF',
     },
 });
 
