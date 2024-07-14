@@ -1,6 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, Button, ScrollView, Image } from 'react-native';
 import axios from 'axios';
+
+const dialogflowApiUrl = 'https://dialogflow.googleapis.com/v2/projects/your-project-id/agent/sessions/123456:detectIntent';
+const dialogflowApiKey = 'your-api-key'; // Replace with your Dialogflow API key
 
 function ChatBot() {
     const [query, setQuery] = useState('');
@@ -13,10 +16,24 @@ function ChatBot() {
         setMessages([...messages, { text: query, isUser: true }]);
         setQuery('');
 
+        setShowResponseImage(true); // Show response image
+
         try {
-            setShowResponseImage(true); // Show response image
-            const response = await axios.post('http://192.168.1.149:3000/chatbot', { query });
-            setMessages(prevMessages => [...prevMessages, { text: response.data.response, isUser: false }]);
+            const response = await axios.post(dialogflowApiUrl, {
+                queryInput: {
+                    text: {
+                        text: query,
+                        languageCode: 'en-US',
+                    },
+                },
+            }, {
+                headers: {
+                    'Authorization': `Bearer ${dialogflowApiKey}`,
+                },
+            });
+
+            const responseText = response.data.queryResult.fulfillmentText;
+            setMessages(prevMessages => [...prevMessages, { text: responseText, isUser: false }]);
         } catch (error) {
             console.error(error);
             setMessages(prevMessages => [...prevMessages, { text: 'Error processing request', isUser: false }]);

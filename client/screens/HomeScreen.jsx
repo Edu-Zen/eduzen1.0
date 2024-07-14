@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   View,
   Text,
@@ -8,25 +8,37 @@ import {
   TouchableOpacity,
   Image,
   Dimensions,
+  Modal,
+  FlatList
 } from "react-native";
 import BottomNavBar from "../components/BottomNavBar";
 import { MaterialIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import axios from "axios";
 import { API_URL } from "@env";
+import { useFocusEffect } from "@react-navigation/native";
 
 const HomeScreen = ({ navigation, route }) => {
   const currentScreen = route.name;
   const email = route.params?.email;
   const [user, setUser] = useState(null);
   const [initials, setInitials] = useState("");
-
+  const [events, setEvents] = useState([]);
+  const [todaysDate, setTodaysDate] = useState("");
+  const [modalVisible, setModalVisible] = useState(false);
   useEffect(() => {
-    if (!email) {
-      console.error("Email is undefined");
-      return;
-    }
+    const today = new Date();
+    const formattedDate = `${today.getDate().toString().padStart(2, '0')}/${(today.getMonth() + 1).toString().padStart(2, '0')}/${today.getFullYear()}`;
+    setTodaysDate(formattedDate);
+  }, []);
 
+  useFocusEffect(
+    useCallback(() => {
+      if (!email) {
+        console.error("Email is undefined");
+        return;
+      }
+      
     const fetchUser = async () => {
       try {
         console.log(email);
@@ -42,9 +54,35 @@ const HomeScreen = ({ navigation, route }) => {
       }
     };
 
-    fetchUser();
-  }, [email]);
 
+      const fetchEvents = async () => {
+        try {
+          const response = await axios.get(
+            `${API_URL}/api/alls/getByEmailAndToday/${email}`
+          );
+          console.log(response.data, "results");
+          setEvents(response.data);
+        } catch (error) {
+          // console.error("Error fetching events:", error);
+        }
+      };
+
+      fetchEvents();
+    fetchUser();
+
+    }, [email])
+  );
+
+  const renderEvent = ({ item }) => {
+    const eventTime = new Date(item.timeOf);
+    const hours = eventTime.getHours();
+    const minutes = eventTime.getMinutes().toString().padStart(2, '0');
+    return (
+      <Text style={styles.timeSlot}>
+        {`${hours}:${minutes} - ${item.nameOf}`}
+      </Text>
+    );
+  };
   const articles = [
     {
       title: "Comment faire le bon choix pour son futur métier",
@@ -70,21 +108,7 @@ const HomeScreen = ({ navigation, route }) => {
   ];
 
   const rewards = [
-    {
-      points: 50000,
-      title: "Carte de recharge 5Dt",
-      partenaire: "ooredoo",
-    },
-    {
-      points: 40000,
-      title: "Abonnement gym 1 mois",
-      partenaire: "fitness club",
-    },
-    {
-      points: 40000,
-      title: "Un bon d'achat de 30dt",
-      partenaire: "Existe",
-    },
+    // your rewards array
   ];
 
   return (
@@ -99,10 +123,10 @@ const HomeScreen = ({ navigation, route }) => {
               <>
                 <TouchableOpacity
                   style={styles.idContainer}
-                  onPress={() => navigation.navigate('MyProfile' , {email})}
+                  onPress={() => navigation.navigate("MyProfile", { email })}
                 >
                   <Text style={styles.idText}>{initials}</Text>
-                  </TouchableOpacity>
+                </TouchableOpacity>
                 <Text style={styles.nameText}></Text>
               </>
             ) : (
@@ -115,19 +139,65 @@ const HomeScreen = ({ navigation, route }) => {
             Bonjour, {`${user?.firstName ?? ""} ${user?.lastName ?? ""}`}
           </Text>
           <View style={styles.timeSlots}>
-            {Array.from({ length: 10 }, (_, index) => (
-              <Text key={index} style={styles.timeSlot}>{`${
-                8 + index
-              }:00`}</Text>
-            ))}
+          {events.length > 0 ? (
+  events.map((event, index) => {
+    const eventTime = new Date(event.timeOf);
+    const hours = eventTime.getHours();
+    const minutes = eventTime.getMinutes().toString().padStart(2, '0');
+    return (
+      <Text key={index} style={styles.timeSlot}>
+        {`${hours}:${minutes} - ${event.nameOf}`}
+      </Text>
+    );
+  })
+) : (
+              <Text style={styles.timeSlot}>
+                Aucun événement prévu pour aujourd'hui
+              </Text>
+            )}
           </View>
           <View style={styles.row}>
-            <Text style={styles.date}>18/06/2024</Text>
+            <Text style={styles.date}>{todaysDate}</Text>
             <TouchableOpacity style={styles.openButton}>
-              <Text style={styles.openButtonText}>Ouvrir</Text>
+              <Text onPress={() => setModalVisible(true)} style={styles.openButtonText}>Ouvrir</Text>
             </TouchableOpacity>
           </View>
         </View>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => setModalVisible(false)}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalTitle}>
+                Evenements pour le : {todaysDate}
+              </Text>
+              <FlatList
+                data={events}
+                renderItem={renderEvent}
+                keyExtractor={(item, index) =>
+                  item._id?.toString() ?? `fallback-${index}`
+                }
+                contentContainerStyle={styles.listContainer}
+              />
+                   <LinearGradient
+                colors={['#3A98F5', '#00E9B8']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.closeButtonContainer}
+              >
+                <TouchableOpacity
+                  style={styles.closeButton}
+                  onPress={() => setModalVisible(false)}
+                >
+                  <Text style={styles.closeButtonText}>Close</Text>
+                </TouchableOpacity>
+              </LinearGradient>
+            </View>
+          </View>
+        </Modal>
         <View style={styles.nextTask}>
           <View style={styles.taskHeader}>
             <Text style={styles.nextTaskTitle}>Prochaine tâche</Text>
@@ -230,10 +300,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#F5F5F5",
+    
   },
   mainContent: {
     padding: 20,
     marginBottom: 60, // Adjust based on BottomNavBar height
+    paddingBottom: 60,
   },
   header: {
     flexDirection: "row",
@@ -290,80 +362,81 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   openButton: {
-    backgroundColor: "#6200EA",
-    borderRadius: 5,
-    padding: 10,
-    alignItems: "center",
+    backgroundColor: "#00C853",
+    borderRadius: 20,
+    paddingHorizontal: 15,
+    paddingVertical: 5,
   },
   openButtonText: {
+    fontSize: 14,
     color: "#FFFFFF",
-    fontSize: 16,
   },
   date: {
-    fontSize: 16,
-    color: "#3F3A64",
-    textAlign: "center",
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#000",
   },
   nextTask: {
-    backgroundColor: "white",
-    padding: 20,
+    backgroundColor: "#FFF",
     borderRadius: 10,
+    padding: 20,
     marginBottom: 20,
   },
   taskHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
+    marginBottom: 10,
   },
   nextTaskTitle: {
-    fontSize: 17,
+    fontSize: 18,
     fontWeight: "bold",
   },
   nextTaskTime: {
     fontSize: 14,
-    color: "#20AD96",
+    color: "#9E9E9E",
   },
   nextTaskActivity: {
-    fontSize: 13,
-    color: "grey",
-    marginTop: 10,
+    fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 5,
   },
   nextTaskDescription: {
-    fontSize: 15,
-    marginTop: 5,
+    fontSize: 14,
+    color: "#757575",
   },
   container1: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    marginBottom: 20,
   },
   objectives: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#E8F5E9",
-    padding: 10, // Reduced padding for smaller card
+    justifyContent: "space-between",
+    padding: 20,
+    backgroundColor: "#3A98F5",
     borderRadius: 10,
-    marginBottom: 20,
-    width: "100%", // Adjust width as needed
-    justifyContent: "space-between", // Align arrows at the ends
+  },
+  arrowIcon: {
+    padding: 10,
   },
   content1: {
+    flex: 1,
     alignItems: "center",
   },
   objectivesTitle: {
-    fontSize: 13,
-    color: "#20AD96",
-    marginBottom: 5, // Reduced margin
+    fontSize: 18,
+    color: "#FFF",
+    fontWeight: "bold",
+    marginBottom: 5,
   },
   objectiveSubtitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 5, // Reduced margin
+    fontSize: 16,
+    color: "#FFF",
+    marginBottom: 5,
   },
   objectivesDescription: {
     fontSize: 14,
-    color: "#20AD96",
+    color: "#FFF",
   },
-  arrowIcon: {},
   schedule: {
     backgroundColor: "#E0F7FA",
     padding: 20,
@@ -385,19 +458,20 @@ const styles = StyleSheet.create({
     fontSize: 13,
   },
   wellbeing: {
-    padding: 20,
+    backgroundColor: "#FFF",
     borderRadius: 10,
+    padding: 20,
     marginBottom: 20,
   },
   wellbeingTitle: {
     fontSize: 18,
     fontWeight: "bold",
-    marginBottom: 10,
+    marginBottom: 5,
   },
   wellbeingDescription: {
     fontSize: 14,
-    marginBottom: 20,
-    color: "grey",
+    color: "#757575",
+    marginBottom: 10,
   },
   articles: {
     flexDirection: "row",
@@ -441,94 +515,86 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     textAlign: "center",
   },
-  bottomNav: {
-    position: "absolute",
-    bottom: 0,
-    width: "100%",
+  cardContainerGradient: {
+    borderRadius: 10,
+    flexDirection: "row",
+    padding: 20,
+    marginBottom: 20,
   },
-  // cardContainer: {
-  //   flexDirection: 'row',
-  //   backgroundColor: '#E0F7FA',
-  //   padding: 20,
-  //   borderRadius: 10,
-  //   marginBottom: 20,
-  //   justifyContent: 'space-between',
-
-  // },
   cardImage: {
-    top: 18,
-    width: width * 0.19,
-    height: height * 0.12,
-    marginRight: 30,
+    width: 80,
+    height: 80,
+    resizeMode: "contain",
+    marginRight: 20,
   },
   cardContent: {
     flex: 1,
+    justifyContent: "center",
   },
   cardTitle: {
-    fontSize: 12,
-    // color:'#FFFFFF',
-    marginBottom: 10,
+    fontSize: 18,
+    color: "#FFF",
+    fontWeight: "bold",
+    marginBottom: 5,
   },
   cardText: {
     fontSize: 14,
-    color: "#3F3A64",
-    marginBottom: 20,
-  },
-  cardButton: {
-    backgroundColor: "white",
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    borderRadius: 5,
-    // alignSelf:"stretch",
-    width: width * 0.5,
-  },
-  cardContainerGradient: {
-    flexDirection: "row",
-    padding: 20,
-    borderRadius: 10,
-    justifyContent: "space-between",
-    marginBottom: 70,
-  },
-  cardButtonText: {
-    color: "blue",
-    fontSize: 14,
-  },
-  rewardsContainer: {
-    padding: 20,
-    borderRadius: 10,
-    marginBottom: 40,
-  },
-  rewardsTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
+    color: "#FFF",
     marginBottom: 10,
   },
-  rewards: {
-    flexDirection: "row",
+  cardButton: {
+    backgroundColor: "#00E9B8",
+    borderRadius: 20,
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    alignItems: "center",
   },
-  rewardCard: {
-    width: width * 0.7,
-    backgroundColor: "#F5F1ED",
+  cardButtonText: {
+    fontSize: 14,
+    color: "#FFF",
+  },
+  bottomNav: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    width: '80%',
+    backgroundColor: 'white',
     padding: 20,
     borderRadius: 10,
-    marginRight: 20,
+    alignItems: 'center',
   },
-  rewardPoints: {
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    // color:'grey'
+  },
+  listContainer: {
+    width: '100%',
+  },
+  closeButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius:10
+  },
+  closeButtonText: {
+    color: '#FFF',
     fontSize: 16,
-    fontWeight: "bold",
-    color: "#20AD96",
-    marginBottom: 5,
-  },
-  rewardTitle: {
-    fontSize: 16,
-    fontWeight: "bold",
-    marginBottom: 5,
-    color: "#3F3A64",
-  },
-  rewardPartner: {
-    fontSize: 14,
-    color: "#757575",
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
 });
+
+
+
 
 export default HomeScreen;
