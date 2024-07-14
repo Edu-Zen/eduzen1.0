@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, Alert, Platform, Keyboard, ScrollView,Dimensions } from 'react-native'; 
 import axios from 'axios';
-import exampleImage from '../assets/splash.png';
+import exampleImage from '../assets/logo.png';
 import { API_URL } from '@env';
 
 const ScreenC = ({ navigation, route }) => {
@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#f5f5f5',
     },
     logo: {
-        width: width * 0.5,
+        width: width * 0.35,
         height: height * 0.2,
         marginBottom: 20,
     },

@@ -10,6 +10,7 @@ import {
   Dimensions,
 } from "react-native";
 import BottomNavBar from "../components/BottomNavBar";
+import UpperNavBar from "../components/UpperNavBar";
 import { MaterialIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import axios from "axios";
@@ -90,11 +91,19 @@ const HomeScreen = ({ navigation, route }) => {
   return (
     <View style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#F5F5F5" />
+      
       <ScrollView contentContainerStyle={styles.mainContent}>
-        <View style={styles.header}>
-          <Text style={styles.headerTitle}>Aujourd'hui</Text>
-          <View style={styles.pointsContainer}>
-            <Text style={styles.pointsText}>+ 1000</Text>
+        <View style={styles.header1}>
+          <Text style={styles.headerTitle1}>Aujourd'hui</Text>
+          <View style={styles.header}>
+          <LinearGradient
+                    colors={['#3A98F5', '#00E9B8']}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                    style={styles.pointsContainer}
+                >
+                    <Text style={styles.points}>1000</Text>
+                </LinearGradient>
             {user ? (
               <>
                 <TouchableOpacity
@@ -235,20 +244,25 @@ const styles = StyleSheet.create({
     padding: 20,
     marginBottom: 60, // Adjust based on BottomNavBar height
   },
-  header: {
+  header1: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     marginBottom: 20,
   },
-  headerTitle: {
+  headerTitle1: {
     fontSize: 24,
     fontWeight: "bold",
   },
-  pointsContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+},
+pointsContainer: {
+  borderRadius: 20,
+  padding: 10,
+  marginRight: 10,
+},
   pointsText: {
     fontSize: 18,
     color: "#00C853",
@@ -490,11 +504,12 @@ const styles = StyleSheet.create({
     marginBottom: 70,
   },
   cardButtonText: {
-    color: "blue",
+    color: '#3A98F5',
     fontSize: 14,
+    fontWeight: 'bold',
   },
   rewardsContainer: {
-    padding: 20,
+    padding: 30,
     borderRadius: 10,
     marginBottom: 40,
   },

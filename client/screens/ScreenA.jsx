@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
-import exampleImage from '../assets/splash.png';
+import exampleImage from '../assets/logo.png';
 
 const ScreenA = ({ navigation }) => {
   return (

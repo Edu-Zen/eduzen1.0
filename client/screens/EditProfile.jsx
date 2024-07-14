@@ -3,8 +3,10 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Dimensions, Scroll
 import { MaterialIcons } from '@expo/vector-icons';
 import axios from 'axios';
 import { API_URL } from '@env';
+import BottomNavBar from '../components/BottomNavBar';
 
 const EditProfile = ({ navigation, route }) => {
+    const currentScreen = route.name;
   const email = route.params?.email;
   const [user, setUser] = useState({
     firstName: '',
@@ -132,6 +134,7 @@ const EditProfile = ({ navigation, route }) => {
           </TouchableOpacity>
         </View>
       </ScrollView>
+      <BottomNavBar navigation={navigation} currentScreen={currentScreen} email={email} />
     </View>
   );
 };

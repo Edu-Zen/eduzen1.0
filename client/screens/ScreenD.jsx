@@ -3,7 +3,7 @@ import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, Alert, Butt
 import axios from 'axios';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker'; // import Picker
-import exampleImage from '../assets/splash.png';
+import exampleImage from '../assets/logo.png';
 
 import { API_URL } from '@env';
 
