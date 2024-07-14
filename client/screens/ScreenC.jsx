@@ -25,15 +25,15 @@ const ScreenC = ({ navigation, route }) => {
                 email,
                 verificationCode,
             });
-            Alert.alert('Success', 'Email verified successfully');
+            Alert.alert('Success', 'Email vérifié avec succès');
             navigation.navigate('ScreenD', { email });
         } catch (error) {
             if (error.response) {
-                Alert.alert('Error', error.response.data.message);
+                Alert.alert('Alerte', error.response.data.message);
             } else if (error.request) {
-                Alert.alert('Error', 'No response from server. Please try again later.');
+                Alert.alert('Alerte', 'Aucune réponse du serveur. Veuillez réessayer plus tard.');
             } else {
-                Alert.alert('Error', 'An error occurred. Please try again.');
+                Alert.alert('Alerte', "Une erreur s'est produite. Veuillez réessayer.");
             }
         }
     };

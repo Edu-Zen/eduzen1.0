@@ -181,8 +181,9 @@ const HomeScreen = ({ navigation, route }) => {
           <View style={styles.modalOverlay}>
             <View style={styles.modalContent}>
               <Text style={styles.modalTitle}>
-                Evenements pour le : {todaysDate}
+                Evénements pour le {todaysDate}
               </Text>
+              {events.length > 0 ? (
               <FlatList
                 data={events}
                 renderItem={renderEvent}
@@ -191,6 +192,10 @@ const HomeScreen = ({ navigation, route }) => {
                 }
                 contentContainerStyle={styles.listContainer}
               />
+            ) : (
+              <Text style={styles.noEventText}>Pas d'activités prévus pour aujourd'hui</Text>
+            )}
+
                    <LinearGradient
                 colors={['#3A98F5', '#00E9B8']}
                 start={{ x: 0, y: 0 }}
@@ -201,7 +206,7 @@ const HomeScreen = ({ navigation, route }) => {
                   style={styles.closeButton}
                   onPress={() => setModalVisible(false)}
                 >
-                  <Text style={styles.closeButtonText}>Close</Text>
+                  <Text style={styles.closeButtonText}>Fermer</Text>
                 </TouchableOpacity>
               </LinearGradient>
             </View>
@@ -374,10 +379,9 @@ pointsContainer: {
     width: "100%",
   },
   openButton: {
-    backgroundColor: "#6200EA",
-    borderRadius: 5,
     padding: 10,
-    alignItems: "center",
+    backgroundColor: '#3F3A64',
+    borderRadius: 10,
   },
   openButtonText: {
     color: "#FFFFFF",
@@ -405,21 +409,29 @@ pointsContainer: {
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 10,
-    // color:'grey'
   },
   listContainer: {
     width: '100%',
   },
-  closeButton: {
+  noEventText: {
+    fontSize: 16,
+    color: '#333',
+    textAlign: 'center',
+    marginVertical: 20,
+  },
+  closeButtonContainer: {
+    width: '100%',
     paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius:10
+    borderRadius: 10,
+    marginTop: 20,
+  },
+  closeButton: {
+    alignItems: 'center',
   },
   closeButtonText: {
     color: '#FFF',
     fontSize: 16,
     fontWeight: 'bold',
-    textAlign: 'center',
   },
   nextTask: {
     backgroundColor: "white",

@@ -64,7 +64,7 @@ const CalendarScreen = ({ navigation, route }) => {
         setHolidays(formattedHolidays);
       } catch (error) {
         console.error(error);
-        Alert.alert("Error", "Failed to fetch holidays");
+        Alert.alert("Error", "Échec de la récupération des jours fériés");
       }
     };
 

@@ -24,7 +24,7 @@ const ScreenB = ({ navigation }) => {
 
   const handleContinue = async () => {
     if (password !== confirmPassword) {
-      Alert.alert("Error", "Passwords do not match");
+      Alert.alert("Alerte", "Les mots de passe ne correspondent pas");
       return;
     }
 
@@ -47,14 +47,14 @@ const ScreenB = ({ navigation }) => {
       // Assuming response.data contains the JSON response from the server
       Alert.alert(
         "Success",
-        "Registration successful, please check your email for verification code"
+        "Inscription réussie, veuillez vérifier votre email pour le code de vérification"
       );
       navigation.navigate("ScreenC", { email });
     } catch (error) {
       if (error.response) {
         const errorMessage = error.response.data.message;
         if (errorMessage === "Student with given email already exists!") {
-          Alert.alert("Error", "Email already exists. Redirecting to login.");
+          Alert.alert("Alerte", "Cet email existe déjà. Redirection vers la page de connexion.");
           navigation.navigate("ScreenLogin");
         } else {
           Alert.alert("Error", errorMessage || "Registration failed");
@@ -62,11 +62,11 @@ const ScreenB = ({ navigation }) => {
       } else if (error.request) {
         Alert.alert(
           "Error",
-          "No response received from server. Please try again."
+          "Aucune réponse reçue du serveur. Veuillez réessayer."
         );
       } else {
         console.error("Error", error.message);
-        Alert.alert("Error", "An error occurred. Please try again.");
+        Alert.alert("Alerte", "Une erreur s'est produite. Veuillez réessayer.");
       }
     }
   };
@@ -136,7 +136,7 @@ const ScreenB = ({ navigation }) => {
       </TouchableOpacity>
 
       <TouchableOpacity onPress={() => navigation.navigate("ScreenLogin")}>
-        <Text style={styles.loginText}>Already have an account? Sign-in</Text>
+        <Text style={styles.loginText}>Vous avez deja un compte? Sign-in</Text>
       </TouchableOpacity>
     </View>
   );

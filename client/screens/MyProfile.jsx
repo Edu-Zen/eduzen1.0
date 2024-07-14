@@ -39,7 +39,7 @@ const MyProfile = ({ navigation, route }) => {
   };
 
   const showImagePickerOptions = () => {
-    Alert.alert("Choose an image", "Choose an option", [
+    Alert.alert("Choisir une image", "Choisir une option", [
       { text: "Take a photo", onPress: () => takePhoto() },
       { text: "Choose from gallery", onPress: () => pickImageFromGallery() },
       { text: "Cancel", onPress: () => {}, style: "cancel" },
