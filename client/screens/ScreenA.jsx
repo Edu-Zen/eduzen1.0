@@ -22,6 +22,9 @@ const ScreenA = ({ navigation }) => {
       <TouchableOpacity style={styles.button} onPress={() => console.log('Button 3 pressed')}>
         <Text style={styles.buttonText}>Coach</Text>
       </TouchableOpacity>
+      <TouchableOpacity style={styles.button} onPress={() => console.log('Button 3 pressed')}>
+        <Text style={styles.buttonText}>Professionnel</Text>
+      </TouchableOpacity>
     </View>
   );
 };

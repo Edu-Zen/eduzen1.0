@@ -25,16 +25,16 @@ const ScreenD = ({ navigation, route }) => {
                 birthDate: birthDate.toISOString().split('T')[0], // format date to YYYY-MM-DD
                 genre,
             });
-            Alert.alert('Success', 'Profile updated successfully');
+            Alert.alert('Success', 'Profil mis à jour avec succès');
             navigation.navigate('ScreenE', {email});
         } catch (error) {
             if (error.response) {
                 console.log(error);
                 Alert.alert('Error', error.response.data.message);
             } else if (error.request) {
-                Alert.alert('Error', 'No response from server. Please try again later.');
+                Alert.alert('Alerte', 'Aucune réponse du serveur. Veuillez réessayer plus tard.');
             } else {
-                Alert.alert('Error', 'An error occurred. Please try again.');
+                Alert.alert('Alerte', "Une erreur s'est produite. Veuillez réessayer.");
             }
         }
     };

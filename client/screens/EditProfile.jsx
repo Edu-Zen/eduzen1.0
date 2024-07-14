@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
   scrollContainer: {
     flexGrow: 1,
     paddingHorizontal: 20,
-    paddingBottom: 20,
+    paddingBottom: 60,
   },
   formContainer: {
     backgroundColor: '#FFFFFF',
@@ -190,6 +190,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     alignItems: 'center',
     marginTop: 10,
+    
   },
   saveButtonText: {
     color: '#FFFFFF',
