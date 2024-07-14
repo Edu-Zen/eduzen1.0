@@ -117,7 +117,7 @@ const Add = ({ navigation, route }) => {
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
-        <UpperNavBar navigation={navigation} currentScreen={currentScreen} />
+        <UpperNavBar navigation={navigation} currentScreen={currentScreen} email={email} />
         {sections.map((section, index) => (
           <View key={index} style={styles.section}>
             <Text style={styles.sectionTitle}>{section.title}</Text>

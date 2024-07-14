@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { View, Image, ActivityIndicator, StyleSheet, Dimensions, Text } from 'react-native';
-import exampleImage from '../assets/splash.png';
+import exampleImage from '../assets/logo.png';
 
 const ScreenE = ({ navigation, route }) => {
     const { email } = route.params; // Destructure email from route.params
@@ -34,7 +34,7 @@ const ScreenE = ({ navigation, route }) => {
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
-
+const { width, height } = Dimensions.get('window');
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -50,10 +50,9 @@ const styles = StyleSheet.create({
         marginBottom: 20, // Adjust as needed for spacing between logo and activity indicator
     },
     logo: {
-        width: '100%',
-        height: '100%',
-        maxWidth: '100%', // Ensure the image doesn't exceed its original size
-        maxHeight: '100%', // Ensure the image doesn't exceed its original size
+        width: width * 0.35,
+        height: height * 0.2,
+        marginBottom: 20,
     },
     activityIndicatorContainer: {
         marginTop: 30, // Adjust as needed for spacing between logo and activity indicator

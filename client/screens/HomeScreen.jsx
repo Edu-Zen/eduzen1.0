@@ -12,6 +12,7 @@ import {
   FlatList
 } from "react-native";
 import BottomNavBar from "../components/BottomNavBar";
+import UpperNavBar from "../components/UpperNavBar";
 import { MaterialIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import axios from "axios";
@@ -114,11 +115,19 @@ const HomeScreen = ({ navigation, route }) => {
   return (
     <View style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#F5F5F5" />
+      
       <ScrollView contentContainerStyle={styles.mainContent}>
-        <View style={styles.header}>
-          <Text style={styles.headerTitle}>Aujourd'hui</Text>
-          <View style={styles.pointsContainer}>
-            <Text style={styles.pointsText}>+ 1000</Text>
+        <View style={styles.header1}>
+          <Text style={styles.headerTitle1}>Aujourd'hui</Text>
+          <View style={styles.header}>
+          <LinearGradient
+                    colors={['#3A98F5', '#00E9B8']}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                    style={styles.pointsContainer}
+                >
+                    <Text style={styles.points}>1000</Text>
+                </LinearGradient>
             {user ? (
               <>
                 <TouchableOpacity
@@ -300,27 +309,30 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#F5F5F5",
-    
   },
   mainContent: {
     padding: 20,
     marginBottom: 60, // Adjust based on BottomNavBar height
-    paddingBottom: 60,
   },
-  header: {
+  header1: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     marginBottom: 20,
   },
-  headerTitle: {
+  headerTitle1: {
     fontSize: 24,
     fontWeight: "bold",
   },
-  pointsContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+},
+pointsContainer: {
+  borderRadius: 20,
+  padding: 10,
+  marginRight: 10,
+},
   pointsText: {
     fontSize: 18,
     color: "#00C853",
@@ -362,81 +374,113 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   openButton: {
-    backgroundColor: "#00C853",
-    borderRadius: 20,
-    paddingHorizontal: 15,
-    paddingVertical: 5,
+    backgroundColor: "#6200EA",
+    borderRadius: 5,
+    padding: 10,
+    alignItems: "center",
   },
   openButtonText: {
-    fontSize: 14,
     color: "#FFFFFF",
+    fontSize: 16,
   },
   date: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#000",
+    fontSize: 16,
+    color: "#3F3A64",
+    textAlign: "center",
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    width: '80%',
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    // color:'grey'
+  },
+  listContainer: {
+    width: '100%',
+  },
+  closeButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius:10
+  },
+  closeButtonText: {
+    color: '#FFF',
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
   nextTask: {
-    backgroundColor: "#FFF",
-    borderRadius: 10,
+    backgroundColor: "white",
     padding: 20,
+    borderRadius: 10,
     marginBottom: 20,
   },
   taskHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 10,
   },
   nextTaskTitle: {
-    fontSize: 18,
+    fontSize: 17,
     fontWeight: "bold",
   },
   nextTaskTime: {
     fontSize: 14,
-    color: "#9E9E9E",
+    color: "#20AD96",
   },
   nextTaskActivity: {
-    fontSize: 16,
-    fontWeight: "bold",
-    marginBottom: 5,
+    fontSize: 13,
+    color: "grey",
+    marginTop: 10,
   },
   nextTaskDescription: {
-    fontSize: 14,
-    color: "#757575",
+    fontSize: 15,
+    marginTop: 5,
   },
   container1: {
-    marginBottom: 20,
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
   objectives: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
-    padding: 20,
-    backgroundColor: "#3A98F5",
+    backgroundColor: "#E8F5E9",
+    padding: 10, // Reduced padding for smaller card
     borderRadius: 10,
-  },
-  arrowIcon: {
-    padding: 10,
+    marginBottom: 20,
+    width: "100%", // Adjust width as needed
+    justifyContent: "space-between", // Align arrows at the ends
   },
   content1: {
-    flex: 1,
     alignItems: "center",
   },
   objectivesTitle: {
-    fontSize: 18,
-    color: "#FFF",
-    fontWeight: "bold",
-    marginBottom: 5,
+    fontSize: 13,
+    color: "#20AD96",
+    marginBottom: 5, // Reduced margin
   },
   objectiveSubtitle: {
-    fontSize: 16,
-    color: "#FFF",
-    marginBottom: 5,
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 5, // Reduced margin
   },
   objectivesDescription: {
     fontSize: 14,
-    color: "#FFF",
+    color: "#20AD96",
   },
+  arrowIcon: {},
   schedule: {
     backgroundColor: "#E0F7FA",
     padding: 20,
@@ -458,20 +502,19 @@ const styles = StyleSheet.create({
     fontSize: 13,
   },
   wellbeing: {
-    backgroundColor: "#FFF",
-    borderRadius: 10,
     padding: 20,
+    borderRadius: 10,
     marginBottom: 20,
   },
   wellbeingTitle: {
     fontSize: 18,
     fontWeight: "bold",
-    marginBottom: 5,
+    marginBottom: 10,
   },
   wellbeingDescription: {
     fontSize: 14,
-    color: "#757575",
-    marginBottom: 10,
+    marginBottom: 20,
+    color: "grey",
   },
   articles: {
     flexDirection: "row",
@@ -515,82 +558,94 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     textAlign: "center",
   },
-  cardContainerGradient: {
-    borderRadius: 10,
-    flexDirection: "row",
-    padding: 20,
-    marginBottom: 20,
-  },
-  cardImage: {
-    width: 80,
-    height: 80,
-    resizeMode: "contain",
-    marginRight: 20,
-  },
-  cardContent: {
-    flex: 1,
-    justifyContent: "center",
-  },
-  cardTitle: {
-    fontSize: 18,
-    color: "#FFF",
-    fontWeight: "bold",
-    marginBottom: 5,
-  },
-  cardText: {
-    fontSize: 14,
-    color: "#FFF",
-    marginBottom: 10,
-  },
-  cardButton: {
-    backgroundColor: "#00E9B8",
-    borderRadius: 20,
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-    alignItems: "center",
-  },
-  cardButtonText: {
-    fontSize: 14,
-    color: "#FFF",
-  },
   bottomNav: {
     position: "absolute",
     bottom: 0,
-    left: 0,
-    right: 0,
+    width: "100%",
   },
-  modalOverlay: {
+  // cardContainer: {
+  //   flexDirection: 'row',
+  //   backgroundColor: '#E0F7FA',
+  //   padding: 20,
+  //   borderRadius: 10,
+  //   marginBottom: 20,
+  //   justifyContent: 'space-between',
+
+  // },
+  cardImage: {
+    top: 18,
+    width: width * 0.19,
+    height: height * 0.12,
+    marginRight: 30,
+  },
+  cardContent: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
   },
-  modalContent: {
-    width: '80%',
-    backgroundColor: 'white',
+  cardTitle: {
+    fontSize: 12,
+    // color:'#FFFFFF',
+    marginBottom: 10,
+  },
+  cardText: {
+    fontSize: 14,
+    color: "#3F3A64",
+    marginBottom: 20,
+  },
+  cardButton: {
+    backgroundColor: "white",
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 5,
+    // alignSelf:"stretch",
+    width: width * 0.5,
+  },
+  cardContainerGradient: {
+    flexDirection: "row",
     padding: 20,
     borderRadius: 10,
-    alignItems: 'center',
+    justifyContent: "space-between",
+    marginBottom: 70,
   },
-  modalTitle: {
-    fontSize: 20,
+  cardButtonText: {
+    color: '#3A98F5',
+    fontSize: 14,
     fontWeight: 'bold',
+  },
+  rewardsContainer: {
+    padding: 30,
+    borderRadius: 10,
+    marginBottom: 40,
+  },
+  rewardsTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
     marginBottom: 10,
-    // color:'grey'
   },
-  listContainer: {
-    width: '100%',
+  rewards: {
+    flexDirection: "row",
   },
-  closeButton: {
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius:10
+  rewardCard: {
+    width: width * 0.7,
+    backgroundColor: "#F5F1ED",
+    padding: 20,
+    borderRadius: 10,
+    marginRight: 20,
   },
-  closeButtonText: {
-    color: '#FFF',
+  rewardPoints: {
     fontSize: 16,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    color: "#20AD96",
+    marginBottom: 5,
+  },
+  rewardTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 5,
+    color: "#3F3A64",
+  },
+  rewardPartner: {
+    fontSize: 14,
+    color: "#757575",
   },
 });
 

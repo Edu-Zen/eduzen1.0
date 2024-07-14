@@ -1,18 +1,32 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, TouchableOpacity, StyleSheet, Image, Text } from 'react-native';
-import homeIcon from '../assets/home/Home.png';
-import agendaIcon from '../assets/home/agenda.png';
-import addIcon from '../assets/home/add.png';
-import heartIcon from '../assets/home/heart.png';
-import diamondIcon from '../assets/home/diamond.png'; // Corrected spelling
-import arrowBackIcon from '../assets/home/arrow-back.png'; // Assuming you have an arrow back icon
-import userImage from '../assets/home/user.png'; // Assuming you have a user image
+import { LinearGradient } from 'expo-linear-gradient';
+import axios from 'axios';
+import { API_URL } from "@env";
+import arrowBackIcon from '../assets/home/arrow-back.png';
 
-const UpperNavBar = ({ navigation, currentScreen, walletAmount, userName }) => {
-    
+const UpperNavBar = ({ navigation, currentScreen, email }) => {
+    const [initials, setInitials] = useState("");
 
-    // Function to handle navigation to selected route
-  
+    useEffect(() => {
+        if (!email) {
+            console.error("Email is undefined");
+            return;
+        }
+
+        const fetchUser = async () => {
+            try {
+                const response = await axios.get(`${API_URL}/api/students/email/${email}`);
+                const firstName = response.data.firstName || "";
+                const lastName = response.data.lastName || "";
+                setInitials(`${firstName.charAt(0)}${lastName.charAt(0)}`);
+            } catch (error) {
+                console.error("Error fetching user data:", error);
+            }
+        };
+
+        fetchUser();
+    }, [email]);
 
     return (
         <View style={styles.container}>
@@ -23,11 +37,26 @@ const UpperNavBar = ({ navigation, currentScreen, walletAmount, userName }) => {
                 <Text style={styles.screenName}>{currentScreen}</Text>
             </View>
             
-            <View style={styles.rightContainer}>
-                <TouchableOpacity style={styles.walletContainer}>
-                    <Text style={styles.walletText}>+1000{walletAmount}</Text>
-                </TouchableOpacity>
-                <Image source={userImage} style={styles.userImage} />
+            <View style={styles.header}>
+                <LinearGradient
+                    colors={['#3A98F5', '#00E9B8']}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                    style={styles.pointsContainer}
+                >
+                    <Text style={styles.points}>1000</Text>
+                </LinearGradient>
+
+                {initials ? (
+                    <TouchableOpacity
+                        style={styles.profileContainer}
+                        onPress={() => navigation.navigate('MyProfile', { email })}
+                    >
+                        <Text style={styles.profileText}>{initials}</Text>
+                    </TouchableOpacity>
+                ) : (
+                    <Text>Loading...</Text>
+                )}
             </View>
         </View>
     );
@@ -63,49 +92,29 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginLeft: 10,
     },
-    centerContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        alignItems: 'center',
-        flex: 1,
-    },
-    tab: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        paddingVertical: 10,
-    },
-    activeTab: {
-        backgroundColor: '#20AD96',
-        borderRadius: 10,
-        paddingVertical: 10,
-    },
-    icon: {
-        width: 24,
-        height: 24,
-        resizeMode: 'contain',
-    },
-    activeIcon: {
-        tintColor: '#FFFFFF',
-    },
-    rightContainer: {
+    header: {
         flexDirection: 'row',
         alignItems: 'center',
     },
-    walletContainer: {
+    pointsContainer: {
+        borderRadius: 20,
         padding: 10,
-        backgroundColor: '#20AD96', // Adjust background color for active tab
-borderRadius:50
+        marginRight: 10,
     },
-    walletText: {
-        fontSize: 18,
+    points: {
+        color: '#fff',
         fontWeight: 'bold',
     },
-    userImage: {
-        width: 40,
-        height: 40,
+    profileContainer: {
+        backgroundColor: "#E0E0E0",
         borderRadius: 20,
-        marginLeft: 10,
+        paddingHorizontal: 10,
+        paddingVertical: 5,
+        marginRight:15,
+    },
+    profileText: {
+        fontSize: 16,
+        color: "#757575",
     },
 });
 

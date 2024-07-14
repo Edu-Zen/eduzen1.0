@@ -4,8 +4,10 @@ import { MaterialIcons } from '@expo/vector-icons';
 import axios from 'axios';
 import * as ImagePicker from 'expo-image-picker';
 import { API_URL } from '@env';
+import BottomNavBar from '../components/BottomNavBar';
 
 const MyProfile = ({ navigation, route }) => {
+  const currentScreen = route.name;
   const { email, updated } = route.params;
   const [user, setUser] = useState(null);
 
@@ -112,6 +114,9 @@ const MyProfile = ({ navigation, route }) => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack({ email,updated })}>
+          <MaterialIcons name="arrow-back" size={24} color="black" />
+        </TouchableOpacity>
         <Text style={styles.headerTitle}>Mon profil</Text>
       </View>
       <View style={styles.profileContainer}>
@@ -168,6 +173,7 @@ const MyProfile = ({ navigation, route }) => {
           </TouchableOpacity>
         </View>
       </View>
+      <BottomNavBar navigation={navigation} currentScreen={currentScreen} email={email} />
     </View>
   );
 };
@@ -179,17 +185,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#F5F5F5',
   },
   header: {
-    height: 60,
-    justifyContent: 'center',
+    flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-    borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    paddingBottom: 10,
   },
   headerTitle: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
-    color: '#4A4A4A',
+    marginLeft: 10,
   },
   profileContainer: {
     padding: 20,

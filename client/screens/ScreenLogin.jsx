@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, Dimensions, Alert } from 'react-native';
 import axios from 'axios';
-import exampleImage from '../assets/splash.png';
+import exampleImage from '../assets/logo.png';
 import { API_URL } from '@env';
 
 const { width, height } = Dimensions.get('window');
@@ -68,9 +68,9 @@ const styles = StyleSheet.create({
         backgroundColor: '#f0f0f0',
     },
     logo: {
-        width: width * 0.4,
-        height: width * 0.4,
-        marginBottom: height * 0.02,
+        width: width * 0.35,
+        height: height * 0.2,
+        marginBottom: 20,
     },
     title: {
         fontSize: width * 0.06,
