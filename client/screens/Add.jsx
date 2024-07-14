@@ -111,7 +111,7 @@ const Add = ({ navigation, route }) => {
   const currentScreen = route.name;
 
   const handlePress = (sectionTitle, item) => {
-    navigation.navigate("Detail", { section: sectionTitle, item ,email});
+    navigation.navigate("Detail", { section: sectionTitle, item ,email,images: item.images});
   };
 
   return (

@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, TextInput, Button, Platform, Alert } from "react-native";
+import { View, Text, StyleSheet, TextInput, Alert, TouchableOpacity } from "react-native";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import axios from 'axios';
 import { API_URL } from '@env';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const Detail = ({ route, navigation }) => {
   const { section, item, email } = route.params;
@@ -10,7 +11,6 @@ const Detail = ({ route, navigation }) => {
   const [time, setTime] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
-
   const [name, setName] = useState('');
 
   const handleDateChange = (event, selectedDate) => {
@@ -51,16 +51,25 @@ const Detail = ({ route, navigation }) => {
     <View style={styles.container}>
       <Text style={styles.title}>Section: {section}</Text>
       <Text style={styles.title}>Item: {item.text}</Text>
-  
+  {console.log(item)}
       <TextInput
         style={styles.input}
-        placeholder="Enter name"
+        placeholder="Enter le nom de l'évenement ..."
         value={name}
         onChangeText={setName}
       />
 
       <View style={styles.pickerContainer}>
-        <Button title="Select Date" onPress={() => setShowDatePicker(true)} />
+        <TouchableOpacity onPress={() => setShowDatePicker(true)}>
+          <LinearGradient
+            colors={['#3A98F5', '#00E9B8']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.button}
+          >
+            <Text style={styles.buttonText}>sélectionner la date</Text>
+          </LinearGradient>
+        </TouchableOpacity>
         {showDatePicker && (
           <DateTimePicker
             value={date}
@@ -70,9 +79,18 @@ const Detail = ({ route, navigation }) => {
           />
         )}
       </View>
-
+ 
       <View style={styles.pickerContainer}>
-        <Button title="Select Time" onPress={() => setShowTimePicker(true)} />
+        <TouchableOpacity onPress={() => setShowTimePicker(true)}>
+          <LinearGradient
+            colors={['#3A98F5', '#00E9B8']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.button}
+          >
+            <Text style={styles.buttonText}>Sélectionner l'heure</Text>
+          </LinearGradient>
+        </TouchableOpacity>
         {showTimePicker && (
           <DateTimePicker
             value={time}
@@ -83,7 +101,16 @@ const Detail = ({ route, navigation }) => {
         )}
       </View>
 
-      <Button title="Ajouter au calendrier" onPress={handleSubmit} />
+      <TouchableOpacity onPress={handleSubmit}>
+        <LinearGradient
+          colors={['#3A98F5', '#00E9B8']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.button}
+        >
+          <Text style={styles.buttonText}>Ajouter au calendrier</Text>
+        </LinearGradient>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -112,11 +139,14 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   button: {
-    backgroundColor: "#007BFF", // Blue button
-    color: "#fff",
-    padding: 10,
+    padding: 15,
     borderRadius: 8,
-    textAlign: "center",
+    alignItems: "center",
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
   },
 });
 

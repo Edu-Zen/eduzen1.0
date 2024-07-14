@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   View,
   Text,
@@ -8,6 +8,8 @@ import {
   TouchableOpacity,
   Image,
   Dimensions,
+  Modal,
+  FlatList
 } from "react-native";
 import BottomNavBar from "../components/BottomNavBar";
 import UpperNavBar from "../components/UpperNavBar";
@@ -15,19 +17,29 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import axios from "axios";
 import { API_URL } from "@env";
+import { useFocusEffect } from "@react-navigation/native";
 
 const HomeScreen = ({ navigation, route }) => {
   const currentScreen = route.name;
   const email = route.params?.email;
   const [user, setUser] = useState(null);
   const [initials, setInitials] = useState("");
-
+  const [events, setEvents] = useState([]);
+  const [todaysDate, setTodaysDate] = useState("");
+  const [modalVisible, setModalVisible] = useState(false);
   useEffect(() => {
-    if (!email) {
-      console.error("Email is undefined");
-      return;
-    }
+    const today = new Date();
+    const formattedDate = `${today.getDate().toString().padStart(2, '0')}/${(today.getMonth() + 1).toString().padStart(2, '0')}/${today.getFullYear()}`;
+    setTodaysDate(formattedDate);
+  }, []);
 
+  useFocusEffect(
+    useCallback(() => {
+      if (!email) {
+        console.error("Email is undefined");
+        return;
+      }
+      
     const fetchUser = async () => {
       try {
         console.log(email);
@@ -43,9 +55,35 @@ const HomeScreen = ({ navigation, route }) => {
       }
     };
 
-    fetchUser();
-  }, [email]);
 
+      const fetchEvents = async () => {
+        try {
+          const response = await axios.get(
+            `${API_URL}/api/alls/getByEmailAndToday/${email}`
+          );
+          console.log(response.data, "results");
+          setEvents(response.data);
+        } catch (error) {
+          // console.error("Error fetching events:", error);
+        }
+      };
+
+      fetchEvents();
+    fetchUser();
+
+    }, [email])
+  );
+
+  const renderEvent = ({ item }) => {
+    const eventTime = new Date(item.timeOf);
+    const hours = eventTime.getHours();
+    const minutes = eventTime.getMinutes().toString().padStart(2, '0');
+    return (
+      <Text style={styles.timeSlot}>
+        {`${hours}:${minutes} - ${item.nameOf}`}
+      </Text>
+    );
+  };
   const articles = [
     {
       title: "Comment faire le bon choix pour son futur métier",
@@ -71,21 +109,7 @@ const HomeScreen = ({ navigation, route }) => {
   ];
 
   const rewards = [
-    {
-      points: 50000,
-      title: "Carte de recharge 5Dt",
-      partenaire: "ooredoo",
-    },
-    {
-      points: 40000,
-      title: "Abonnement gym 1 mois",
-      partenaire: "fitness club",
-    },
-    {
-      points: 40000,
-      title: "Un bon d'achat de 30dt",
-      partenaire: "Existe",
-    },
+    // your rewards array
   ];
 
   return (
@@ -108,10 +132,10 @@ const HomeScreen = ({ navigation, route }) => {
               <>
                 <TouchableOpacity
                   style={styles.idContainer}
-                  onPress={() => navigation.navigate('MyProfile' , {email})}
+                  onPress={() => navigation.navigate("MyProfile", { email })}
                 >
                   <Text style={styles.idText}>{initials}</Text>
-                  </TouchableOpacity>
+                </TouchableOpacity>
                 <Text style={styles.nameText}></Text>
               </>
             ) : (
@@ -124,19 +148,65 @@ const HomeScreen = ({ navigation, route }) => {
             Bonjour, {`${user?.firstName ?? ""} ${user?.lastName ?? ""}`}
           </Text>
           <View style={styles.timeSlots}>
-            {Array.from({ length: 10 }, (_, index) => (
-              <Text key={index} style={styles.timeSlot}>{`${
-                8 + index
-              }:00`}</Text>
-            ))}
+          {events.length > 0 ? (
+  events.map((event, index) => {
+    const eventTime = new Date(event.timeOf);
+    const hours = eventTime.getHours();
+    const minutes = eventTime.getMinutes().toString().padStart(2, '0');
+    return (
+      <Text key={index} style={styles.timeSlot}>
+        {`${hours}:${minutes} - ${event.nameOf}`}
+      </Text>
+    );
+  })
+) : (
+              <Text style={styles.timeSlot}>
+                Aucun événement prévu pour aujourd'hui
+              </Text>
+            )}
           </View>
           <View style={styles.row}>
-            <Text style={styles.date}>18/06/2024</Text>
+            <Text style={styles.date}>{todaysDate}</Text>
             <TouchableOpacity style={styles.openButton}>
-              <Text style={styles.openButtonText}>Ouvrir</Text>
+              <Text onPress={() => setModalVisible(true)} style={styles.openButtonText}>Ouvrir</Text>
             </TouchableOpacity>
           </View>
         </View>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => setModalVisible(false)}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalTitle}>
+                Evenements pour le : {todaysDate}
+              </Text>
+              <FlatList
+                data={events}
+                renderItem={renderEvent}
+                keyExtractor={(item, index) =>
+                  item._id?.toString() ?? `fallback-${index}`
+                }
+                contentContainerStyle={styles.listContainer}
+              />
+                   <LinearGradient
+                colors={['#3A98F5', '#00E9B8']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.closeButtonContainer}
+              >
+                <TouchableOpacity
+                  style={styles.closeButton}
+                  onPress={() => setModalVisible(false)}
+                >
+                  <Text style={styles.closeButtonText}>Close</Text>
+                </TouchableOpacity>
+              </LinearGradient>
+            </View>
+          </View>
+        </Modal>
         <View style={styles.nextTask}>
           <View style={styles.taskHeader}>
             <Text style={styles.nextTaskTitle}>Prochaine tâche</Text>
@@ -317,6 +387,39 @@ pointsContainer: {
     fontSize: 16,
     color: "#3F3A64",
     textAlign: "center",
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    width: '80%',
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    // color:'grey'
+  },
+  listContainer: {
+    width: '100%',
+  },
+  closeButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius:10
+  },
+  closeButtonText: {
+    color: '#FFF',
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
   nextTask: {
     backgroundColor: "white",
@@ -545,5 +648,8 @@ pointsContainer: {
     color: "#757575",
   },
 });
+
+
+
 
 export default HomeScreen;
