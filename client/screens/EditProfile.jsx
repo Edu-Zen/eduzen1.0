@@ -5,7 +5,7 @@ import axios from 'axios';
 import { API_URL } from '@env';
 import BottomNavBar from '../components/BottomNavBar';
 
-const EditProfile = ({ navigation, route }) => {
+const EditProfile = ({ navigation, route , mongoUri }) => {
     const currentScreen = route.name;
   const email = route.params?.email;
   const [user, setUser] = useState({

@@ -6,7 +6,7 @@ import { API_URL } from '@env';
 import Icon from "react-native-vector-icons/Ionicons";
 const { width, height } = Dimensions.get('window');
 
-const ScreenLogin = ({ navigation }) => {
+const ScreenLogin = ({ navigation,  }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);

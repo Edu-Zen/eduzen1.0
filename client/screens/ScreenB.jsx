@@ -13,8 +13,11 @@ import axios from "axios";
 import exampleImage from "../assets/logo.png";
 import Icon from "react-native-vector-icons/Ionicons";
 import { API_URL } from "@env";
+import getEnvVars from '../config';
 
-const ScreenB = ({ navigation }) => {
+const { apiUrl } = getEnvVars();
+
+const ScreenB = ({ navigation  }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -29,9 +32,9 @@ const ScreenB = ({ navigation }) => {
     }
 
     try {
-      console.log(API_URL);
+      console.log(apiUrl);
       const response = await axios.post(
-        `${API_URL}/api/students/register`,
+        `${apiUrl}/api/students/register`,
         {
           email,
           password,
@@ -84,7 +87,7 @@ const ScreenB = ({ navigation }) => {
       <Image source={exampleImage} style={styles.logo} />
       <Text style={styles.title}>Créez votre profil</Text>
       <Text style={styles.subtitle}>Configurez votre identification</Text>
-      {console.log(API_URL)}
+      {console.log(apiUrl)}
 
       <TextInput
         style={styles.input}

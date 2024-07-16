@@ -4,12 +4,14 @@ import axios from 'axios';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker'; // import Picker
 import exampleImage from '../assets/logo.png';
+import getEnvVars from '../config';
+const { apiUrl } = getEnvVars();
 
-import { API_URL } from '@env';
+// import { API_URL } from '@env';
 
 const { width, height } = Dimensions.get('window');
 
-const ScreenD = ({ navigation, route }) => {
+const ScreenD = ({ navigation, route , mongoUri}) => {
     const { email } = route.params;
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
@@ -19,7 +21,7 @@ const ScreenD = ({ navigation, route }) => {
 
     const handleContinue = async () => {
         try {
-            const response = await axios.post(`${API_URL}/api/students/update/${email}`, {
+            const response = await axios.post(`${apiUrl}/api/students/update/${email}`, {
                 firstName,
                 lastName,
                 birthDate: birthDate.toISOString().split('T')[0], // format date to YYYY-MM-DD

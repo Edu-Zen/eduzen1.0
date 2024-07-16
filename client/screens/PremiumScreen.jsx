@@ -28,7 +28,7 @@ const toolsData = [
   },
 ];
 
-const PremiumScreen = ({navigation, route}) => {
+const PremiumScreen = ({navigation, route, mongoUri}) => {
   const currentScreen = route.name;
   const email = route.params.email;
 

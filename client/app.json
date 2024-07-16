@@ -18,10 +18,17 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.louhichi94.EduZen" ,
+      "permissions": ["INTERNET"]
     },
     "web": {
       "favicon": "./assets/splash.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "934d9aca-90e2-4a24-a9f4-82f37860d224"
+      }
     }
   }
 }

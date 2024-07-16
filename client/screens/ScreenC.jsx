@@ -2,9 +2,11 @@ import React, { useState, useRef } from 'react';
 import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, Alert, Platform, Keyboard, ScrollView,Dimensions } from 'react-native'; 
 import axios from 'axios';
 import exampleImage from '../assets/logo.png';
-import { API_URL } from '@env';
+import getEnvVars from '../config';
+// import { API_URL } from '@env';
+const { apiUrl } = getEnvVars();
 
-const ScreenC = ({ navigation, route }) => {
+const ScreenC = ({ navigation, route ,mongoUri }) => {
     const { email } = route.params;
     const [code, setCode] = useState(['', '', '', '', '', '']);
     const inputs = useRef([]);
@@ -21,7 +23,7 @@ const ScreenC = ({ navigation, route }) => {
     const handleContinue = async () => {
         const verificationCode = code.join('');
         try {
-            const response = await axios.post(`${API_URL}/api/students/verify-email`, {
+            const response = await axios.post(`${apiUrl}/api/students/verify-email`, {
                 email,
                 verificationCode,
             });

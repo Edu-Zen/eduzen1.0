@@ -2,7 +2,9 @@ import React from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 import exampleImage from '../assets/logo.png';
 
-const ScreenA = ({ navigation }) => {
+const ScreenA = ({ navigation , mongoUri  }) => {
+
+  console.log(mongoUri);
   return (
     <View style={styles.container}>
       <Image 
