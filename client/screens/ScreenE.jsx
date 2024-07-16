@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { View, Image, ActivityIndicator, StyleSheet, Dimensions, Text } from 'react-native';
 import exampleImage from '../assets/logo.png';
 
-const ScreenE = ({ navigation, route }) => {
+const ScreenE = ({ navigation, route  }) => {
     const { email } = route.params; // Destructure email from route.params
 
     // Navigate to HomeScreen after 5 seconds
